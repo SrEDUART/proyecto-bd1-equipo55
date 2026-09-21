@@ -122,3 +122,19 @@ CREATE TABLE METODO_PAGO (
     eliminado_en   DATETIME     NULL
 );
 ```
+#Pago
+```sql
+-- PAGO: resuelve la relación N:M entre VENTA y METODO_PAGO. Una venta puede
+-- tener varias filas de PAGO (pago combinado, RN.05). La suma de "monto" de
+-- todos los pagos de una venta debe ser igual a VENTA.total (se valida por
+-- aplicación, no se puede expresar con un CHECK entre tablas distintas).
+CREATE TABLE PAGO (
+    id_pago        INT           IDENTITY(1,1) PRIMARY KEY,
+    id_venta       INT           NOT NULL,
+    id_metodo_pago INT           NOT NULL,
+    monto          DECIMAL(12,2) NOT NULL,
+    eliminado_en   DATETIME      NULL,
+    CONSTRAINT fk_pago_venta  FOREIGN KEY (id_venta)       REFERENCES VENTA(id_venta),
+    CONSTRAINT fk_pago_metodo FOREIGN KEY (id_metodo_pago) REFERENCES METODO_PAGO(id_metodo_pago)
+);
+```
