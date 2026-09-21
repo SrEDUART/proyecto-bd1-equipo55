@@ -110,3 +110,15 @@ CREATE TABLE DETALLE_VENTA (
     -- de aplicación contra INVENTARIO, porque involucra otra tabla (no es un simple CHECK).
 );
 ```
+#METODO_PAGO
+```sql
+-- METODO_PAGO: catálogo fijo de formas de pago disponibles (efectivo, débito,
+-- crédito, transferencia, etc.). Tabla aparte para no repetir nombre/descripcion
+-- en cada pago registrado.
+CREATE TABLE METODO_PAGO (
+    id_metodo_pago INT          IDENTITY(1,1) PRIMARY KEY,
+    nombre         VARCHAR(30)  NOT NULL,
+    descripcion    VARCHAR(100) NULL,
+    eliminado_en   DATETIME     NULL
+);
+```
