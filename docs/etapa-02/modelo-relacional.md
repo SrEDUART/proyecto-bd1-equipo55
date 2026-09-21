@@ -89,3 +89,24 @@ CREATE TABLE VENTA (
     CONSTRAINT fk_venta_sucursal FOREIGN KEY (id_sucursal) REFERENCES SUCURSAL(id_sucursal)
 );
 ```
+#DETALLE_VENTA
+```sql
+-- DETALLE_VENTA: una fila por cada producto incluido en una venta (resuelve la
+-- relación N:M entre VENTA y PRODUCTO). precio_unitario es una COPIA del precio
+-- al momento de vender (RN.04): si después cambia el precio del producto en el
+-- catálogo, esta venta ya registrada no se ve afectada.
+CREATE TABLE DETALLE_VENTA (
+    id_detalle_venta INT           IDENTITY(1,1) PRIMARY KEY,
+    id_venta          INT           NOT NULL,
+    id_producto       INT           NOT NULL,
+    cantidad          INT           NOT NULL,
+    precio_unitario   DECIMAL(12,2) NOT NULL,  -- snapshot histórico, no se recalcula desde PRODUCTO
+    subtotal          DECIMAL(12,2) NOT NULL,
+    eliminado_en      DATETIME      NULL,
+    CONSTRAINT fk_detalle_venta    FOREIGN KEY (id_venta)    REFERENCES VENTA(id_venta),
+    CONSTRAINT fk_detalle_producto FOREIGN KEY (id_producto) REFERENCES PRODUCTO(id_producto),
+    CONSTRAINT ck_cantidad_positiva CHECK (cantidad > 0)
+    -- La validación de que "cantidad" no supere el stock (RN.01) se controla a nivel
+    -- de aplicación contra INVENTARIO, porque involucra otra tabla (no es un simple CHECK).
+);
+```
