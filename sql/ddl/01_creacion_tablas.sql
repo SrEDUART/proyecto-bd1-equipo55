@@ -24,3 +24,15 @@ CREATE TABLE METODO_PAGO (
     descripcion VARCHAR(100) NOT NULL,
     CONSTRAINT PK_METODO_PAGO PRIMARY KEY (id_metodo_pago)
 );
+
+-- PRODUCTO: catalogo de productos de la ferreteria 
+CREATE TABLE PRODUCTO (
+    id_producto INT IDENTITY(1,1),
+    codigo_barra VARCHAR(50) NOT NULL UNIQUE,
+    nombre VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(150) NOT NULL,
+    porcentaje_ganancia DECIMAL(5,2) NOT NULL CHECK (porcentaje_ganancia >= 0),
+    id_categoria INT NOT NULL,
+    CONSTRAINT PK_PRODUCTO PRIMARY KEY (id_producto),
+    CONSTRAINT FK_PRODUCTO_CATEGORIA FOREIGN KEY (id_categoria) REFERENCES CATEGORIA(id_categoria)
+);
