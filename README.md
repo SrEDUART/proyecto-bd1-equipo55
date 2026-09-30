@@ -10,7 +10,7 @@ Proyecto desarrollado para la asignatura **Bases de Datos I** de la Licenciatura
 - Zacarias, Matias Daniel — DNI 43746504
 - Aponte, Josue Eduardo
 - Melgarejo Jaras, Carlos Exequiel — DNI 40877202
-- Correa Cuevas, Josias Francisco
+- Correa Cuevas, Josias Francisco -42061409
 
 ## Descripción general
 
