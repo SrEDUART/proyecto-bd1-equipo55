@@ -11,3 +11,16 @@ CREATE TABLE PERFIL (
     CONSTRAINT PK_PERFIL PRIMARY KEY (id_perfil)
 );
 
+CREATE TABLE CATEGORIA (
+    id_categoria INT IDENTITY(1,1),
+    nombre_cat VARCHAR(50) NOT NULL UNIQUE,
+    descripcion_cat VARCHAR(100) NOT NULL,
+    CONSTRAINT PK_CATEGORIA PRIMARY KEY (id_categoria)
+);
+
+CREATE TABLE METODO_PAGO (
+    id_metodo_pago INT IDENTITY(1,1),
+    nombre VARCHAR(50) NOT NULL UNIQUE,
+    descripcion VARCHAR(100) NOT NULL,
+    CONSTRAINT PK_METODO_PAGO PRIMARY KEY (id_metodo_pago)
+);
