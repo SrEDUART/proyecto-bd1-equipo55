@@ -162,3 +162,149 @@ INSERT INTO FUNCIONALIDAD (codigo_funcionalidad, nombre_funcionalidad, descripci
 UPDATE FUNCIONALIDAD
 SET descripcion_funcionalidad = 'Alta, baja, modificacion y bloqueo de usuarios del sistema'
 WHERE codigo_funcionalidad = 101;
+
+-- ============================================================
+-- DIRECCION: direcciones utilizadas por clientes, usuarios
+-- y sucursales del sistema.
+-- ============================================================
+INSERT INTO DIRECCION (calle, altura, id_localidad) VALUES
+('Junin', 1250, 1),
+('San Juan', 845, 1),
+('Cordoba', 1560, 1),
+('Colon', 720, 2),
+('Belgrano', 980, 3),
+('9 de Julio', 1340, 5);
+
+-- Verificacion: muestra las direcciones cargadas
+SELECT * FROM DIRECCION ORDER BY id_direccion ASC;
+
+-- Prueba de Restriccion CHECK (esto DEBE tirar error al ejecutar).
+-- Se usa una altura igual a 0 para demostrar que la restriccion
+-- CHECK (altura > 0) funciona.
+INSERT INTO DIRECCION (calle, altura, id_localidad) VALUES
+('Direccion Invalida', 0, 1);
+
+-- Prueba de Restriccion FOREIGN KEY (esto DEBE tirar error).
+-- Se utiliza un id_localidad inexistente.
+INSERT INTO DIRECCION (calle, altura, id_localidad) VALUES
+('Calle Inexistente', 500, 999);
+
+-- Ejemplo de UPDATE: modificar la altura de una direccion
+UPDATE DIRECCION
+SET altura = 1300
+WHERE id_direccion = 1;
+
+
+-- ============================================================
+-- CLIENTE: clientes registrados en la ferreteria.
+-- ============================================================
+INSERT INTO CLIENTE (nombre, apellido, dni, correo, id_direccion) VALUES
+('Martin', 'Gomez', 35123456, 'martin.gomez@mail.com', 1),
+('Laura', 'Fernandez', 36789412, 'laura.fernandez@mail.com', 2),
+('Carlos', 'Ramirez', 38945612, 'carlos.ramirez@mail.com', 4),
+('Sofia', 'Benitez', 40123789, 'sofia.benitez@mail.com', 5);
+
+-- Verificacion: muestra los clientes cargados
+SELECT * FROM CLIENTE ORDER BY id_cliente ASC;
+
+-- Prueba de Restriccion UNIQUE (esto DEBE tirar error).
+-- Se repite el DNI de un cliente existente.
+INSERT INTO CLIENTE (nombre, apellido, dni, correo, id_direccion) VALUES
+('Cliente', 'Duplicado', 35123456, 'cliente.duplicado@mail.com', 3);
+
+-- Ejemplo de UPDATE: actualizar el correo de un cliente
+UPDATE CLIENTE
+SET correo = 'martin.gomez.nuevo@mail.com'
+WHERE id_cliente = 1;
+
+
+-- ============================================================
+-- SUCURSAL: sucursales disponibles de la ferreteria.
+-- ============================================================
+INSERT INTO SUCURSAL (nombre, id_direccion) VALUES
+('Sucursal Centro', 3),
+('Sucursal Goya', 4),
+('Sucursal Mercedes', 5);
+
+-- Verificacion: muestra las sucursales cargadas
+SELECT * FROM SUCURSAL ORDER BY id_sucursal ASC;
+
+-- Prueba de Restriccion UNIQUE (esto DEBE tirar error).
+-- Se repite el nombre de una sucursal existente.
+INSERT INTO SUCURSAL (nombre, id_direccion) VALUES
+('Sucursal Centro', 6);
+
+-- Ejemplo de UPDATE: modificar el nombre de una sucursal
+UPDATE SUCURSAL
+SET nombre = 'Sucursal Centro Corrientes'
+WHERE id_sucursal = 1;
+
+
+-- ============================================================
+-- USUARIO: usuarios que operan el sistema.
+-- ============================================================
+INSERT INTO USUARIO (
+    nombre,
+    apellido,
+    dni,
+    nombre_usuario,
+    contraseña_hash,
+    correo,
+    fecha_nacimiento,
+    id_direccion,
+    id_perfil,
+    id_sucursal
+) VALUES
+('Juan', 'Perez', 32123456, 'jperez', 'hash_usuario_01',
+ 'juan.perez@ferreteria.com', '1990-05-15', 1, 1, 1),
+
+('Maria', 'Lopez', 35456789, 'mlopez', 'hash_usuario_02',
+ 'maria.lopez@ferreteria.com', '1993-08-22', 2, 2, 1),
+
+('Pedro', 'Acosta', 37896541, 'pacosta', 'hash_usuario_03',
+ 'pedro.acosta@ferreteria.com', '1988-11-10', 4, 3, 2),
+
+('Ana', 'Gimenez', 40234567, 'agimenez', 'hash_usuario_04',
+ 'ana.gimenez@ferreteria.com', '1998-03-25', 5, 4, 3);
+
+-- Verificacion: muestra los usuarios cargados
+SELECT * FROM USUARIO ORDER BY id_usuario ASC;
+
+-- Prueba de Restriccion UNIQUE (esto DEBE tirar error).
+-- Se repite a proposito el nombre_usuario jperez.
+INSERT INTO USUARIO (
+    nombre,
+    apellido,
+    dni,
+    nombre_usuario,
+    contraseña_hash,
+    correo,
+    fecha_nacimiento,
+    id_direccion,
+    id_perfil,
+    id_sucursal
+) VALUES
+('Usuario', 'Duplicado', 41234567, 'jperez', 'hash_prueba',
+ 'usuario.duplicado@ferreteria.com', '2000-01-15', 3, 2, 1);
+
+-- Prueba de Restriccion FOREIGN KEY (esto DEBE tirar error).
+-- Se utiliza un id_sucursal que no existe.
+INSERT INTO USUARIO (
+    nombre,
+    apellido,
+    dni,
+    nombre_usuario,
+    contraseña_hash,
+    correo,
+    fecha_nacimiento,
+    id_direccion,
+    id_perfil,
+    id_sucursal
+) VALUES
+('Usuario', 'Invalido', 42345678, 'uinvalido', 'hash_prueba',
+ 'usuario.invalido@ferreteria.com', '1995-06-20', 3, 2, 999);
+
+-- Ejemplo de UPDATE: modificar el perfil de un usuario
+UPDATE USUARIO
+SET id_perfil = 5
+WHERE id_usuario = 2;
