@@ -136,3 +136,28 @@ CREATE TABLE VENTA (
     CONSTRAINT FK_VENTA_CLIENTE FOREIGN KEY (id_cliente) REFERENCES CLIENTE(id_cliente),
     CONSTRAINT FK_VENTA_USUARIO FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario)
 );
+
+
+
+CREATE TABLE DETALLE_VENTA (
+    id_detalle INT IDENTITY(1,1) NOT NULL,
+    cantidad INT NOT NULL CHECK (cantidad > 0),
+    precio_unitario_catalogo DECIMAL(10,2) NOT NULL CHECK (precio_unitario_catalogo > 0),
+    id_producto INT NOT NULL,
+    id_venta INT NOT NULL,
+    CONSTRAINT PK_DETALLE_VENTA PRIMARY KEY (id_detalle),
+    CONSTRAINT FK_DETALLE_PRODUCTO FOREIGN KEY (id_producto) REFERENCES producto(id_producto),
+    CONSTRAINT FK_DETALLE_VENTA FOREIGN KEY (id_venta) REFERENCES venta(id_venta)
+);
+
+
+
+CREATE TABLE PAGO (
+    id_pago INT IDENTITY(1,1) NOT NULL,
+    monto DECIMAL(10,2) NOT NULL CHECK (monto > 0),
+    id_venta INT NOT NULL,
+    id_metodo_pago INT NOT NULL,
+    CONSTRAINT PK_PAGO PRIMARY KEY (id_pago),
+    CONSTRAINT FK_PAGO_VENTA FOREIGN KEY (id_venta) REFERENCES venta(id_venta),
+    CONSTRAINT FK_PAGO_METODO FOREIGN KEY (id_metodo_pago) REFERENCES metodo_pago(id_metodo_pago)
+);
