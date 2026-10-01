@@ -5,29 +5,31 @@ CREATE TABLE PROVINCIA (
 );
 
 CREATE TABLE PERFIL (
-    id_perfil INT IDENTITY(1,1),
+    id_perfil INT IDENTITY(1,1) NOT NULL,
     nombre_perfil VARCHAR(50) NOT NULL UNIQUE,
     descripcion_perfil VARCHAR(100) NOT NULL,
     CONSTRAINT PK_PERFIL PRIMARY KEY (id_perfil)
 );
 
 CREATE TABLE CATEGORIA (
-    id_categoria INT IDENTITY(1,1),
+    id_categoria INT IDENTITY(1,1) NOT NULL,
     nombre_cat VARCHAR(50) NOT NULL UNIQUE,
     descripcion_cat VARCHAR(100) NOT NULL,
     CONSTRAINT PK_CATEGORIA PRIMARY KEY (id_categoria)
 );
 
 CREATE TABLE METODO_PAGO (
-    id_metodo_pago INT IDENTITY(1,1),
+    id_metodo_pago INT IDENTITY(1,1) NOT NULL,
     nombre VARCHAR(50) NOT NULL UNIQUE,
     descripcion VARCHAR(100) NOT NULL,
     CONSTRAINT PK_METODO_PAGO PRIMARY KEY (id_metodo_pago)
 );
 
--- PRODUCTO: catalogo de productos de la ferreteria (Integrante 3)
+
+
+-- PRODUCTO: catalogo de productos de la ferreteria 
 CREATE TABLE PRODUCTO (
-    id_producto INT IDENTITY(1,1),
+    id_producto INT IDENTITY(1,1) NOT NULL,
     codigo_barra VARCHAR(50) NOT NULL UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     descripcion VARCHAR(150) NOT NULL,
