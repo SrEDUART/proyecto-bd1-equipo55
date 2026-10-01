@@ -161,3 +161,32 @@ CREATE TABLE PAGO (
     CONSTRAINT FK_PAGO_VENTA FOREIGN KEY (id_venta) REFERENCES venta(id_venta),
     CONSTRAINT FK_PAGO_METODO FOREIGN KEY (id_metodo_pago) REFERENCES metodo_pago(id_metodo_pago)
 );
+-- ============================================================
+-- TABLAS DE TELEFONOS (atributos multivalorados)
+-- Cada entidad puede tener uno o varios telefonos.
+-- Se elimina el campo telefono de SUCURSAL, CLIENTE y USUARIO.
+-- ============================================================
+
+-- SUCURSAL_TELEFONO
+CREATE TABLE SUCURSAL_TELEFONO (
+    telefono VARCHAR(20) NOT NULL,
+    id_sucursal INT NOT NULL,
+    CONSTRAINT PK_SUCURSAL_TELEFONO PRIMARY KEY (telefono, id_sucursal),
+    CONSTRAINT FK_SUCURSAL_TELEFONO_SUCURSAL FOREIGN KEY (id_sucursal) REFERENCES SUCURSAL(id_sucursal)
+);
+
+-- CLIENTE_TELEFONO
+CREATE TABLE CLIENTE_TELEFONO (
+    telefono VARCHAR(20) NOT NULL,
+    id_cliente INT NOT NULL,
+    CONSTRAINT PK_CLIENTE_TELEFONO PRIMARY KEY (telefono, id_cliente),
+    CONSTRAINT FK_CLIENTE_TELEFONO_CLIENTE FOREIGN KEY (id_cliente) REFERENCES CLIENTE(id_cliente)
+);
+
+-- USUARIO_TELEFONO
+CREATE TABLE USUARIO_TELEFONO (
+    telefono VARCHAR(20) NOT NULL,
+    id_usuario INT NOT NULL,
+    CONSTRAINT PK_USUARIO_TELEFONO PRIMARY KEY (telefono, id_usuario),
+    CONSTRAINT FK_USUARIO_TELEFONO_USUARIO FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario)
+);
