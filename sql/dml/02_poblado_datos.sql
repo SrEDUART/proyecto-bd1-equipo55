@@ -62,3 +62,46 @@ INSERT INTO METODO_PAGO (nombre, descripcion) VALUES
 -- Verificacion: muestra los metodos de pago cargados
 SELECT * FROM METODO_PAGO ORDER BY id_metodo_pago ASC;
 --
+
+
+-- Carga de productos de prueba: un producto por cada categoria existente.
+-- El ultimo valor de cada fila es el id_categoria al que pertenece
+-- (1=Herramientas, 2=Herramientas Electricas, 3=Buloneria y Fijaciones,
+-- 4=Pintureria, 5=Electricidad, 6=Plomeria y Agua, 7=Jardineria y Camping,
+-- 8=Seguridad Industrial).
+INSERT INTO PRODUCTO (codigo_barra, nombre_producto, descripcion, porcentaje_ganancia, id_categoria) VALUES
+('7791234561001', 'Martillo carpintero', 'Martillo de carpintero, mango de madera, cabeza de acero de 300g', 40.00, 1),
+('7791234561002', 'Amoladora angular 4-1/2', 'Amoladora angular de 750W con disco de corte incluido', 30.00, 2),
+('7791234561003', 'Tornillo autoperforante x100', 'Caja de 100 tornillos autoperforantes punta mecha', 50.00, 3),
+('7791234561004', 'Pintura latex interior 4L', 'Pintura latex blanco mate para interiores, balde de 4 litros', 35.00, 4),
+('7791234561005', 'Llave termica 16A', 'Llave termica monofasica curva C de 16 amperes', 32.00, 5),
+('7791234561006', 'Cano PVC 110mm x 3m', 'Cano de PVC de 110mm de diametro para desague cloacal', 26.00, 6),
+('7791234561007', 'Manguera de riego 15m', 'Manguera reforzada de 15 metros con conectores', 30.00, 7),
+('7791234561008', 'Casco de seguridad', 'Casco de seguridad clase B con ajuste tipo cricket', 40.00, 8);
+
+-- Verificacion: muestra todo lo que quedo cargado en la tabla
+SELECT * FROM PRODUCTO ORDER BY id_producto ASC;
+
+-- Prueba de Restriccion UNIQUE (esto DEBE tirar error al ejecutar).
+-- Se repite a proposito el codigo_barra del primer producto para
+-- demostrar que la restriccion UNIQUE de esa columna funciona.
+INSERT INTO PRODUCTO (codigo_barra, nombre_producto, descripcion, porcentaje_ganancia, id_categoria) VALUES
+('7791234561001', 'Martillo duplicado', 'Prueba de codigo de barra repetido', 40.00, 1);
+
+-- Prueba de Restriccion CHECK (esto tambien DEBE tirar error).
+-- Se carga un porcentaje_ganancia negativo a proposito para
+-- demostrar que la restriccion CHECK (porcentaje_ganancia >= 0) funciona.
+INSERT INTO PRODUCTO (codigo_barra, nombre_producto, descripcion, porcentaje_ganancia, id_categoria) VALUES
+('7791234561099', 'Producto con margen invalido', 'Prueba de CHECK porcentaje_ganancia', -10.00, 1);
+
+-- Ejemplo de UPDATE 1: corregir el margen de ganancia de un producto
+-- (se busca por id_producto)
+UPDATE PRODUCTO
+SET porcentaje_ganancia = 45.00
+WHERE id_producto = 1;
+
+-- Ejemplo de UPDATE 2: actualizar la descripcion de un producto
+-- por un cambio de presentacion (se busca por codigo_barra)
+UPDATE PRODUCTO
+SET descripcion = 'Pintura latex blanco mate para interiores, balde de 4 litros, nueva formula'
+WHERE codigo_barra = '7791234561004';
