@@ -109,3 +109,30 @@ CREATE TABLE USUARIO (
     CONSTRAINT FK_USUARIO_PERFIL FOREIGN KEY (id_perfil) REFERENCES PERFIL(id_perfil),
     CONSTRAINT FK_USUARIO_SUCURSAL FOREIGN KEY (id_sucursal) REFERENCES SUCURSAL(id_sucursal)
 );
+
+-- INVENTARIO: Control de stock por producto y sucursal
+CREATE TABLE INVENTARIO (
+    id_inventario INT IDENTITY(1,1) NOT NULL,
+    stock INT NOT NULL CHECK (stock >= 0),
+    stock_minimo INT NOT NULL CHECK (stock_minimo >= 0),
+    id_producto INT NOT NULL,
+    id_sucursal INT NOT NULL,
+    CONSTRAINT PK_INVENTARIO PRIMARY KEY (id_inventario),
+    CONSTRAINT FK_INVENTARIO_PRODUCTO FOREIGN KEY (id_producto) REFERENCES PRODUCTO(id_producto),
+    CONSTRAINT FK_INVENTARIO_SUCURSAL FOREIGN KEY (id_sucursal) REFERENCES SUCURSAL(id_sucursal)
+);
+
+-- VENTA: Encabezado de transacciones
+CREATE TABLE VENTA (
+    id_venta INT IDENTITY(1,1) NOT NULL,
+    fecha_hora DATETIME NOT NULL DEFAULT GETDATE(),
+    tipo_factura VARCHAR(10) NOT NULL CHECK (tipo_factura IN ('A', 'B', 'C')),
+    descuento DECIMAL(5,2) NOT NULL DEFAULT 0.00 CHECK (descuento >= 0),
+    id_sucursal INT NOT NULL,
+    id_cliente INT NOT NULL,
+    id_usuario INT NOT NULL,
+    CONSTRAINT PK_VENTA PRIMARY KEY (id_venta),
+    CONSTRAINT FK_VENTA_SUCURSAL FOREIGN KEY (id_sucursal) REFERENCES SUCURSAL(id_sucursal),
+    CONSTRAINT FK_VENTA_CLIENTE FOREIGN KEY (id_cliente) REFERENCES CLIENTE(id_cliente),
+    CONSTRAINT FK_VENTA_USUARIO FOREIGN KEY (id_usuario) REFERENCES USUARIO(id_usuario)
+);
