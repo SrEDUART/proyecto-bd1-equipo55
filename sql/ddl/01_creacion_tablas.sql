@@ -25,11 +25,11 @@ CREATE TABLE METODO_PAGO (
     CONSTRAINT PK_METODO_PAGO PRIMARY KEY (id_metodo_pago)
 );
 
--- PRODUCTO: catalogo de productos de la ferreteria (Integrante 3)
+-- PRODUCTO: catalogo de productos de la ferreteria 
 CREATE TABLE PRODUCTO (
-    id_producto INT IDENTITY(1,1),
+    id_producto INT IDENTITY(1,1) NOT NULL,
     codigo_barra VARCHAR(50) NOT NULL UNIQUE,
-    nombre VARCHAR(50) NOT NULL,
+    nombre_producto VARCHAR(50) NOT NULL,
     descripcion VARCHAR(150) NOT NULL,
     porcentaje_ganancia DECIMAL(5,2) NOT NULL CHECK (porcentaje_ganancia >= 0),
     id_categoria INT NOT NULL,
