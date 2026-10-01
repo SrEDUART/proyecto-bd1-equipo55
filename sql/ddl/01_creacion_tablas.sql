@@ -36,3 +36,27 @@ CREATE TABLE PRODUCTO (
     CONSTRAINT PK_PRODUCTO PRIMARY KEY (id_producto),
     CONSTRAINT FK_PRODUCTO_CATEGORIA FOREIGN KEY (id_categoria) REFERENCES CATEGORIA(id_categoria)
 );
+
+
+-- LOCALIDAD: localidades pertenecientes a una provincia, usadas
+-- en las direcciones del sistema (clientes, usuarios, sucursales).
+CREATE TABLE LOCALIDAD (
+    id_localidad INT IDENTITY(1,1) NOT NULL,
+    nombre_localidad VARCHAR(50) NOT NULL,
+    codigo_postal VARCHAR(10) NOT NULL,
+    id_provincia INT NOT NULL,
+    CONSTRAINT PK_LOCALIDAD PRIMARY KEY (id_localidad),
+    CONSTRAINT FK_LOCALIDAD_PROVINCIA FOREIGN KEY (id_provincia) REFERENCES PROVINCIA(id_provincia)
+);
+
+-- FUNCIONALIDAD: funcionalidades del sistema que pueden
+-- habilitarse para cada perfil de usuario.
+CREATE TABLE FUNCIONALIDAD (
+    id_funcionalidad INT IDENTITY(1,1) NOT NULL,
+    codigo_funcionalidad INT NOT NULL UNIQUE,
+    nombre_funcionalidad VARCHAR(50) NOT NULL,
+    descripcion_funcionalidad VARCHAR(150) NOT NULL,
+    id_perfil INT NOT NULL,
+    CONSTRAINT PK_FUNCIONALIDAD PRIMARY KEY (id_funcionalidad),
+    CONSTRAINT FK_FUNCIONALIDAD_PERFIL FOREIGN KEY (id_perfil) REFERENCES PERFIL(id_perfil)
+);
