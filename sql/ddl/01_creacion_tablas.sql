@@ -60,3 +60,52 @@ CREATE TABLE FUNCIONALIDAD (
     CONSTRAINT PK_FUNCIONALIDAD PRIMARY KEY (id_funcionalidad),
     CONSTRAINT FK_FUNCIONALIDAD_PERFIL FOREIGN KEY (id_perfil) REFERENCES PERFIL(id_perfil)
 );
+-- DIRECCION: direcciones de clientes, usuarios y sucursales.
+CREATE TABLE DIRECCION (
+    id_direccion INT IDENTITY(1,1) NOT NULL,
+    calle VARCHAR(50) NOT NULL,
+    altura INT NOT NULL CHECK (altura > 0),
+    id_localidad INT NOT NULL,
+    CONSTRAINT PK_DIRECCION PRIMARY KEY (id_direccion),
+    CONSTRAINT FK_DIRECCION_LOCALIDAD FOREIGN KEY (id_localidad) REFERENCES LOCALIDAD(id_localidad)
+);
+
+-- CLIENTE: datos principales de los clientes de la ferreteria.
+CREATE TABLE CLIENTE (
+    id_cliente INT IDENTITY(1,1) NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    dni INT NOT NULL UNIQUE,
+    correo VARCHAR(100) NOT NULL UNIQUE,
+    id_direccion INT NOT NULL,
+    CONSTRAINT PK_CLIENTE PRIMARY KEY (id_cliente),
+    CONSTRAINT FK_CLIENTE_DIRECCION FOREIGN KEY (id_direccion) REFERENCES DIRECCION(id_direccion)
+);
+
+-- SUCURSAL: sucursales de la ferreteria.
+CREATE TABLE SUCURSAL (
+    id_sucursal INT IDENTITY(1,1) NOT NULL,
+    nombre VARCHAR(50) NOT NULL UNIQUE,
+    id_direccion INT NOT NULL,
+    CONSTRAINT PK_SUCURSAL PRIMARY KEY (id_sucursal),
+    CONSTRAINT FK_SUCURSAL_DIRECCION FOREIGN KEY (id_direccion) REFERENCES DIRECCION(id_direccion)
+);
+
+-- USUARIO: usuarios que operan el sistema.
+CREATE TABLE USUARIO (
+    id_usuario INT IDENTITY(1,1) NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    apellido VARCHAR(50) NOT NULL,
+    dni INT NOT NULL UNIQUE,
+    nombre_usuario VARCHAR(50) NOT NULL UNIQUE,
+    contraseña_hash VARCHAR(255) NOT NULL,
+    correo VARCHAR(100) NOT NULL UNIQUE,
+    fecha_nacimiento DATE NOT NULL,
+    id_direccion INT NOT NULL,
+    id_perfil INT NOT NULL,
+    id_sucursal INT NOT NULL,
+    CONSTRAINT PK_USUARIO PRIMARY KEY (id_usuario),
+    CONSTRAINT FK_USUARIO_DIRECCION FOREIGN KEY (id_direccion) REFERENCES DIRECCION(id_direccion),
+    CONSTRAINT FK_USUARIO_PERFIL FOREIGN KEY (id_perfil) REFERENCES PERFIL(id_perfil),
+    CONSTRAINT FK_USUARIO_SUCURSAL FOREIGN KEY (id_sucursal) REFERENCES SUCURSAL(id_sucursal)
+);
