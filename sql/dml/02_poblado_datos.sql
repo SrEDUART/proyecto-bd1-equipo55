@@ -105,3 +105,60 @@ WHERE id_producto = 1;
 UPDATE PRODUCTO
 SET descripcion = 'Pintura latex blanco mate para interiores, balde de 4 litros, nueva formula'
 WHERE codigo_barra = '7791234561004';
+
+
+-- Carga de localidades de prueba. El ultimo valor de cada fila
+-- es el id_provincia al que pertenece (1=Corrientes, 2=Chaco,
+-- 3=Misiones, segun el orden en que se cargo PROVINCIA).
+INSERT INTO LOCALIDAD (nombre_localidad, codigo_postal, id_provincia) VALUES
+('Corrientes Capital', '3400', 1),
+('Goya', '3450', 1),
+('Mercedes', '3470', 1),
+('San Luis del Palmar', '3413', 1),
+('Resistencia', '3500', 2),
+('Saenz Pena', '3700', 2),
+('Posadas', '3300', 3),
+('Obera', '3360', 3);
+
+-- Verificacion: muestra las localidades cargadas
+SELECT * FROM LOCALIDAD ORDER BY id_localidad ASC;
+
+-- Prueba de Restriccion FOREIGN KEY (esto DEBE tirar error al ejecutar).
+-- Se usa un id_provincia que no existe (999) para demostrar que
+-- la restriccion FK_LOCALIDAD_PROVINCIA funciona.
+INSERT INTO LOCALIDAD (nombre_localidad, codigo_postal, id_provincia) VALUES
+('Localidad Invalida', '0000', 999);
+
+-- Ejemplo de UPDATE: corregir el codigo postal de una localidad
+UPDATE LOCALIDAD
+SET codigo_postal = '3401'
+WHERE nombre_localidad = 'Corrientes Capital';
+
+
+-- Carga de funcionalidades de prueba, una por cada perfil existente.
+-- El ultimo valor de cada fila es el id_perfil al que corresponde
+-- (1=Administrador, 2=Vendedor, 3=Cajero, 4=Encargado de Stock,
+-- 5=Gerente de Sucursal, 6=Auditor, 7=Soporte Tecnico, 8=Comprador).
+INSERT INTO FUNCIONALIDAD (codigo_funcionalidad, nombre_funcionalidad, descripcion_funcionalidad, id_perfil) VALUES
+(101, 'Gestionar Usuarios', 'Alta, baja y modificacion de usuarios del sistema', 1),
+(102, 'Registrar Venta', 'Emitir un comprobante de venta y cobrar', 2),
+(103, 'Arquear Caja', 'Realizar el arqueo de caja al cierre del turno', 3),
+(104, 'Ajustar Stock', 'Modificar el stock de un producto por recepcion de mercaderia', 4),
+(105, 'Ver Reportes de Sucursal', 'Consultar reportes de ventas y stock de la sucursal', 5),
+(106, 'Auditar Ventas', 'Revisar en modo lectura las ventas y pagos registrados', 6),
+(107, 'Administrar Perfiles', 'Configurar perfiles y funcionalidades del sistema', 7),
+(108, 'Generar Pedido a Proveedor', 'Crear un pedido de reposicion a un proveedor', 8);
+
+-- Verificacion: muestra las funcionalidades cargadas
+SELECT * FROM FUNCIONALIDAD ORDER BY id_funcionalidad ASC;
+
+-- Prueba de Restriccion UNIQUE (esto DEBE tirar error al ejecutar).
+-- Se repite a proposito el codigo_funcionalidad 101 para demostrar
+-- que la restriccion UNIQUE de esa columna funciona.
+INSERT INTO FUNCIONALIDAD (codigo_funcionalidad, nombre_funcionalidad, descripcion_funcionalidad, id_perfil) VALUES
+(101, 'Funcionalidad Duplicada', 'Prueba de codigo repetido', 1);
+
+-- Ejemplo de UPDATE: actualizar la descripcion de una funcionalidad
+UPDATE FUNCIONALIDAD
+SET descripcion_funcionalidad = 'Alta, baja, modificacion y bloqueo de usuarios del sistema'
+WHERE codigo_funcionalidad = 101;
