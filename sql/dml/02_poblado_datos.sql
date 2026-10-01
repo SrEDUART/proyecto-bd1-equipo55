@@ -308,3 +308,135 @@ INSERT INTO USUARIO (
 UPDATE USUARIO
 SET id_perfil = 5
 WHERE id_usuario = 2;
+
+
+-- ============================================================
+-- INVENTARIO: stock de productos por sucursal.
+-- ============================================================
+INSERT INTO INVENTARIO (stock, stock_minimo, id_producto, id_sucursal) VALUES
+(50, 10, 1, 1),
+(30, 5, 2, 1),
+(100, 20, 3, 1),
+(25, 5, 4, 2),
+(40, 8, 5, 2),
+(15, 3, 6, 3);
+
+-- Verificacion: muestra el inventario cargado
+SELECT * FROM INVENTARIO ORDER BY id_inventario ASC;
+
+-- Prueba de Restriccion CHECK (esto DEBE tirar error).
+-- Se intenta cargar stock negativo.
+INSERT INTO INVENTARIO (stock, stock_minimo, id_producto, id_sucursal) VALUES
+(-5, 2, 1, 1);
+
+-- Prueba de Restriccion FOREIGN KEY (esto DEBE tirar error).
+-- Se utiliza un id_producto inexistente.
+INSERT INTO INVENTARIO (stock, stock_minimo, id_producto, id_sucursal) VALUES
+(10, 2, 999, 1);
+
+-- Ejemplo de UPDATE: modificar el stock de un producto
+UPDATE INVENTARIO
+SET stock = 45
+WHERE id_inventario = 1;
+
+
+-- ============================================================
+-- VENTA: ventas realizadas en las sucursales.
+-- ============================================================
+INSERT INTO VENTA (tipo_factura, descuento, id_sucursal, id_cliente, id_usuario) VALUES
+('B', 0.00, 1, 1, 1),
+('C', 5.00, 2, 3, 3),
+('A', 10.00, 3, 4, 4);
+
+-- Verificacion: muestra las ventas cargadas
+SELECT * FROM VENTA ORDER BY id_venta ASC;
+
+-- Prueba de Restriccion CHECK (esto DEBE tirar error).
+-- Se utiliza un tipo de factura no permitido.
+INSERT INTO VENTA (tipo_factura, descuento, id_sucursal, id_cliente, id_usuario) VALUES
+('X', 0.00, 1, 1, 1);
+
+-- Prueba de Restriccion FOREIGN KEY (esto DEBE tirar error).
+-- Se utiliza un cliente inexistente.
+INSERT INTO VENTA (tipo_factura, descuento, id_sucursal, id_cliente, id_usuario) VALUES
+('B', 0.00, 1, 999, 1);
+
+-- Ejemplo de UPDATE: modificar el descuento de una venta
+UPDATE VENTA
+SET descuento = 8.00
+WHERE id_venta = 2;
+
+
+-- ============================================================
+-- DETALLE_VENTA: productos incluidos en cada venta.
+-- ============================================================
+INSERT INTO DETALLE_VENTA (
+    cantidad,
+    precio_unitario_catalogo,
+    id_producto,
+    id_inventario,
+    id_venta
+) VALUES
+(2, 15000.00, 1, 1, 1),
+(1, 65000.00, 2, 2, 1),
+(5, 3500.00, 3, 3, 2),
+(2, 22000.00, 4, 4, 2),
+(3, 8500.00, 5, 5, 3);
+
+-- Verificacion: muestra los detalles cargados
+SELECT * FROM DETALLE_VENTA ORDER BY id_detalle ASC;
+
+-- Prueba de Restriccion CHECK (esto DEBE tirar error).
+-- Se intenta registrar una cantidad igual a cero.
+INSERT INTO DETALLE_VENTA (
+    cantidad,
+    precio_unitario_catalogo,
+    id_producto,
+    id_inventario,
+    id_venta
+) VALUES
+(0, 15000.00, 1, 1, 1);
+
+-- Prueba de Restriccion FOREIGN KEY (esto DEBE tirar error).
+-- Se utiliza un inventario inexistente.
+INSERT INTO DETALLE_VENTA (
+    cantidad,
+    precio_unitario_catalogo,
+    id_producto,
+    id_inventario,
+    id_venta
+) VALUES
+(1, 15000.00, 1, 999, 1);
+
+-- Ejemplo de UPDATE: modificar la cantidad de un detalle
+UPDATE DETALLE_VENTA
+SET cantidad = 3
+WHERE id_detalle = 1;
+
+
+-- ============================================================
+-- PAGO: pagos asociados a las ventas.
+-- ============================================================
+INSERT INTO PAGO (monto, id_venta, id_metodo_pago) VALUES
+(95000.00, 1, 1),
+(38500.00, 2, 2),
+(25500.00, 3, 4);
+
+-- Verificacion: muestra los pagos cargados
+SELECT * FROM PAGO ORDER BY id_pago ASC;
+
+-- Prueba de Restriccion CHECK (esto DEBE tirar error).
+-- Se intenta registrar un pago con monto igual a cero.
+INSERT INTO PAGO (monto, id_venta, id_metodo_pago) VALUES
+(0.00, 1, 1);
+
+-- Prueba de Restriccion FOREIGN KEY (esto DEBE tirar error).
+-- Se utiliza un metodo de pago inexistente.
+INSERT INTO PAGO (monto, id_venta, id_metodo_pago) VALUES
+(10000.00, 1, 999);
+
+-- Ejemplo de UPDATE: modificar el monto de un pago
+UPDATE PAGO
+SET monto = 40000.00
+WHERE id_pago = 2;
+
