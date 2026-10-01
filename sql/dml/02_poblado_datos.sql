@@ -439,4 +439,61 @@ INSERT INTO PAGO (monto, id_venta, id_metodo_pago) VALUES
 UPDATE PAGO
 SET monto = 40000.00
 WHERE id_pago = 2;
+-- ============================================================
+-- SUCURSAL_TELEFONO: telefonos de las sucursales.
+-- Una sucursal puede tener mas de un telefono.
+-- ============================================================
+INSERT INTO SUCURSAL_TELEFONO (telefono, id_sucursal) VALUES
+('3794123456', 1),
+('3794654321', 1),
+('3794789012', 2),
+('3794890123', 2),
+('3794901234', 3),
+('3794012345', 3),
+('3795123456', 4),
+('3795234567', 4),
+('3795345678', 5),
+('3795456789', 5);
 
+-- Verificacion: muestra los telefonos de sucursales cargados
+SELECT * FROM SUCURSAL_TELEFONO ORDER BY id_sucursal ASC, telefono ASC;
+
+
+-- ============================================================
+-- CLIENTE_TELEFONO: telefonos de los clientes.
+-- Un cliente puede tener mas de un telefono.
+-- ============================================================
+INSERT INTO CLIENTE_TELEFONO (telefono, id_cliente) VALUES
+('3794111111', 1),
+('3794222222', 1),
+('3794333333', 2),
+('3794444444', 3),
+('3794555555', 3),
+('3794666666', 4),
+('3794777777', 5),
+('3794888888', 6),
+('3794999999', 7),
+('3794000000', 8);
+
+-- Verificacion: muestra los telefonos de clientes cargados
+SELECT * FROM CLIENTE_TELEFONO ORDER BY id_cliente ASC, telefono ASC;
+
+
+-- ============================================================
+-- USUARIO_TELEFONO: telefonos de los usuarios del sistema.
+-- Un usuario puede tener mas de un telefono.
+-- ============================================================
+INSERT INTO USUARIO_TELEFONO (telefono, id_usuario) VALUES
+('3796111111', 1),
+('3796222222', 2),
+('3796333333', 3),
+('3796444444', 4),
+('3796555555', 5),
+('3796666666', 6),
+('3796777777', 7),
+('3796888888', 8),
+('3796999999', 9),
+('3796000000', 10);
+
+-- Verificacion: muestra los telefonos de usuarios cargados
+SELECT * FROM USUARIO_TELEFONO ORDER BY id_usuario ASC, telefono ASC;
