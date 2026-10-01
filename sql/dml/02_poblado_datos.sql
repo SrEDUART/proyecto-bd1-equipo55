@@ -61,3 +61,4 @@ INSERT INTO METODO_PAGO (nombre, descripcion) VALUES
 
 -- Verificacion: muestra los metodos de pago cargados
 SELECT * FROM METODO_PAGO ORDER BY id_metodo_pago ASC;
+--
