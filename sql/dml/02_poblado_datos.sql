@@ -316,7 +316,7 @@ INSERT INTO LOCALIDAD (nombre_localidad, codigo_postal, id_provincia) VALUES
 ('La Banda', '4300', 16),
 ('Termas de Rio Hondo', '4220', 16),
 ('Frias', '4230', 16),
-('Añatuya', '3760', 16)
+('Añatuya', '3760', 16),
 ('Quimili', '3740', 16),
 ('Monte Quemado', '3714', 16),
 ('Fernandez', '4322', 16);    
@@ -475,8 +475,13 @@ BEGIN
     )
     BEGIN
 
-        -- Distribuye los clientes entre las 8 localidades cargadas.
-        SET @cliente_localidad = ((@cliente_i - 1) % 8) + 1;
+     -- Selecciona una localidad existente al azar.
+    -- De esta forma los clientes pueden pertenecer a distintas
+    -- localidades y provincias cargadas en el sistema.
+    SELECT TOP 1
+        @cliente_localidad = id_localidad
+    FROM LOCALIDAD
+    ORDER BY NEWID();
 
         -- Selecciona nombres de una lista.
         SET @cliente_nombre = CHOOSE(
