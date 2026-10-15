@@ -1,3 +1,4 @@
+
 -- ========================================================================================================================================================
 -- ========================================================================================================================================================
 -- PROVINCIA: listado de provincias usadas para las direcciones
@@ -77,70 +78,70 @@ SELECT * FROM METODO_PAGO ORDER BY id_metodo_pago ASC;
 -- (1=Herramientas, 2=Herramientas Electricas, 3=Buloneria y Fijaciones,
 -- 4=Pintureria, 5=Electricidad, 6=Plomeria y Agua, 7=Jardineria y Camping,
 -- 8=Seguridad Industrial).
-INSERT INTO PRODUCTO (codigo_barra, nombre_producto, descripcion, porcentaje_ganancia, id_categoria) VALUES
-('7791234561001', 'Martillo carpintero', 'Martillo de carpintero, mango de madera, cabeza de acero de 300g', 40.00, 1),
-('7791234561002', 'Amoladora angular 4-1/2', 'Amoladora angular de 750W con disco de corte incluido', 30.00, 2),
-('7791234561003', 'Tornillo autoperforante x100', 'Caja de 100 tornillos autoperforantes punta mecha', 50.00, 3),
-('7791234561004', 'Pintura latex interior 4L', 'Pintura latex blanco mate para interiores, balde de 4 litros', 35.00, 4),
-('7791234561005', 'Llave termica 16A', 'Llave termica monofasica curva C de 16 amperes', 32.00, 5),
-('7791234561006', 'Cano PVC 110mm x 3m', 'Cano de PVC de 110mm de diametro para desague cloacal', 26.00, 6),
-('7791234561007', 'Manguera de riego 15m', 'Manguera reforzada de 15 metros con conectores', 30.00, 7),
-('7791234561008', 'Casco de seguridad', 'Casco de seguridad clase B con ajuste tipo cricket', 40.00, 8),
-('7791234561009', 'Destornillador Phillips','Destornillador Phillips con mango antideslizante de 6 pulgadas', 25.00, 1),
-('7791234561010', 'Destornillador plano','Destornillador plano con mango aislante de 6 pulgadas', 25.00, 1),
-('7791234561011', 'Pinza universal 8 pulgadas','Pinza universal de acero con mangos antideslizantes', 30.00, 1),
-('7791234561012', 'Alicate de corte','Alicate de corte diagonal para cables y alambres', 28.00, 1),
-('7791234561013', 'Llave inglesa 10 pulgadas','Llave ajustable de acero para tuercas y tornillos', 35.00, 1),
-('7791234561014', 'Serrucho manual','Serrucho de mano con hoja de acero para cortar madera', 32.00, 1),
-('7791234561015', 'Cinta metrica 5 metros','Cinta metrica retráctil de 5 metros con traba', 30.00, 1),
-('7791234561016', 'Nivel de burbuja 40 cm','Nivel manual de aluminio de 40 centimetros', 30.00, 1),
-('7791234561017', 'Maza de 1 kg','Maza con cabeza de acero y mango reforzado',35.00, 1),
-('7791234561018', 'Llave combinada 13 mm', 'Llave de acero con boca fija y estrella de 13 mm', 30.00, 1),
-('7791234561019', 'Arco de sierra manual', 'Arco de sierra para cortes manuales en metal',32.00, 1),
-('7791234561020', 'Formon para madera', 'Formon de acero para trabajos de carpinteria', 38.00, 1),
-('7791234561021', 'Juego de llaves Allen','Juego de llaves Allen de distintas medidas', 35.00, 1),
+INSERT INTO PRODUCTO (codigo_barra, nombre_producto, descripcion, precio_costo, porcentaje_ganancia, id_categoria) VALUES
+('7791234561001', 'Martillo carpintero', 'Martillo de carpintero, mango de madera, cabeza de acero de 300g', 10714.29, 40.00, 1),
+('7791234561002', 'Amoladora angular 4-1/2', 'Amoladora angular de 750W con disco de corte incluido', 50000.00, 30.00, 2),
+('7791234561003', 'Tornillo autoperforante x100', 'Caja de 100 tornillos autoperforantes punta mecha', 2333.33, 50.00, 3),
+('7791234561004', 'Pintura latex interior 4L', 'Pintura latex blanco mate para interiores, balde de 4 litros', 16296.30, 35.00, 4),
+('7791234561005', 'Llave termica 16A', 'Llave termica monofasica curva C de 16 amperes', 6439.39, 32.00, 5),
+('7791234561006', 'Cano PVC 110mm x 3m', 'Cano de PVC de 110mm de diametro para desague cloacal', 9500.00, 26.00, 6),
+('7791234561007', 'Manguera de riego 15m', 'Manguera reforzada de 15 metros con conectores', 12000.00, 30.00, 7),
+('7791234561008', 'Casco de seguridad', 'Casco de seguridad clase B con ajuste tipo cricket', 8500.00, 40.00, 8),
+('7791234561009', 'Destornillador Phillips','Destornillador Phillips con mango antideslizante de 6 pulgadas', 6500.00, 25.00, 1),
+('7791234561010', 'Destornillador plano','Destornillador plano con mango aislante de 6 pulgadas', 6200.00, 25.00, 1),
+('7791234561011', 'Pinza universal 8 pulgadas','Pinza universal de acero con mangos antideslizantes', 9500.00, 30.00, 1),
+('7791234561012', 'Alicate de corte','Alicate de corte diagonal para cables y alambres', 7800.00, 28.00, 1),
+('7791234561013', 'Llave inglesa 10 pulgadas','Llave ajustable de acero para tuercas y tornillos', 10500.00, 35.00, 1),
+('7791234561014', 'Serrucho manual','Serrucho de mano con hoja de acero para cortar madera', 9000.00, 32.00, 1),
+('7791234561015', 'Cinta metrica 5 metros','Cinta metrica retráctil de 5 metros con traba', 4800.00, 30.00, 1),
+('7791234561016', 'Nivel de burbuja 40 cm','Nivel manual de aluminio de 40 centimetros', 7600.00, 30.00, 1),
+('7791234561017', 'Maza de 1 kg','Maza con cabeza de acero y mango reforzado',12500.00, 35.00, 1),
+('7791234561018', 'Llave combinada 13 mm', 'Llave de acero con boca fija y estrella de 13 mm', 5400.00, 30.00, 1),
+('7791234561019', 'Arco de sierra manual', 'Arco de sierra para cortes manuales en metal',8200.00, 32.00, 1),
+('7791234561020', 'Formon para madera', 'Formon de acero para trabajos de carpinteria', 6800.00, 38.00, 1),
+('7791234561021', 'Juego de llaves Allen','Juego de llaves Allen de distintas medidas', 7200.00, 35.00, 1),
     
-('7791234561022', 'Taladro percutor 650W', 'Taladro electrico con funcion de percusion', 28.00, 2),
-('7791234561023', 'Lijadora orbital 240W','Lijadora orbital electrica para superficies de madera', 30.00, 2),
-('7791234561024', 'Sierra circular 1400W', 'Sierra circular electrica para cortes de madera', 27.00, 2),
-('7791234561025', 'Atornillador electrico','Atornillador electrico para trabajos de montaje', 32.00, 2),
-('7791234561026', 'Rotomartillo 800W','Rotomartillo electrico para perforacion en mamposteria', 29.00, 2),
+('7791234561022', 'Taladro percutor 650W', 'Taladro electrico con funcion de percusion', 42000.00, 28.00, 2),
+('7791234561023', 'Lijadora orbital 240W','Lijadora orbital electrica para superficies de madera', 38000.00, 30.00, 2),
+('7791234561024', 'Sierra circular 1400W', 'Sierra circular electrica para cortes de madera', 75000.00, 27.00, 2),
+('7791234561025', 'Atornillador electrico','Atornillador electrico para trabajos de montaje', 32000.00, 32.00, 2),
+('7791234561026', 'Rotomartillo 800W','Rotomartillo electrico para perforacion en mamposteria', 68000.00, 29.00, 2),
 
-('7791234561027', 'Tornillo para madera x100','Caja de 100 tornillos para fijacion en madera', 45.00, 3),
-('7791234561028', 'Tuerca hexagonal M8 x50','Bolsa de 50 tuercas hexagonales metricas M8', 40.00, 3),
-('7791234561029', 'Arandela plana M8 x100','Bolsa de 100 arandelas planas de acero M8', 38.00, 3),
-('7791234561030', 'Tarugo nylon 8 mm x50', 'Bolsa de 50 tarugos de nylon de 8 mm', 45.00, 3),
-('7791234561031', 'Bulon hexagonal M10 x20','Caja de 20 bulones hexagonales metricos M10', 40.00, 3),
+('7791234561027', 'Tornillo para madera x100','Caja de 100 tornillos para fijacion en madera', 3200.00, 45.00, 3),
+('7791234561028', 'Tuerca hexagonal M8 x50','Bolsa de 50 tuercas hexagonales metricas M8', 2800.00, 40.00, 3),
+('7791234561029', 'Arandela plana M8 x100','Bolsa de 100 arandelas planas de acero M8', 2200.00, 38.00, 3),
+('7791234561030', 'Tarugo nylon 8 mm x50', 'Bolsa de 50 tarugos de nylon de 8 mm', 2600.00, 45.00, 3),
+('7791234561031', 'Bulon hexagonal M10 x20','Caja de 20 bulones hexagonales metricos M10', 4200.00, 40.00, 3),
 
-('7791234561032', 'Pintura latex exterior 4L','Pintura latex blanca para paredes exteriores', 35.00, 4),
-('7791234561033', 'Esmalte sintetico 1L','Esmalte sintetico para superficies de metal y madera', 32.00, 4),
-('7791234561034', 'Rodillo para pintar 22 cm','Rodillo para aplicacion de pintura en paredes', 40.00, 4),
-('7791234561035', 'Pincel chato 2 pulgadas','Pincel chato de cerdas sinteticas para pintura',38.00, 4),
-('7791234561036', 'Aguarras 1L', 'Solvente para dilucion de pinturas sinteticas', 30.00, 4),
+('7791234561032', 'Pintura latex exterior 4L','Pintura latex blanca para paredes exteriores', 18000.00, 35.00, 4),
+('7791234561033', 'Esmalte sintetico 1L','Esmalte sintetico para superficies de metal y madera', 12500.00, 32.00, 4),
+('7791234561034', 'Rodillo para pintar 22 cm','Rodillo para aplicacion de pintura en paredes', 5200.00, 40.00, 4),
+('7791234561035', 'Pincel chato 2 pulgadas','Pincel chato de cerdas sinteticas para pintura',2800.00, 38.00, 4),
+('7791234561036', 'Aguarras 1L', 'Solvente para dilucion de pinturas sinteticas', 4500.00, 30.00, 4),
 
-('7791234561037', 'Cable unipolar 2.5 mm','Rollo de cable unipolar de 2.5 mm cuadrados', 30.00, 5),
-('7791234561038', 'Tomacorriente doble','Tomacorriente doble para instalacion electrica', 35.00, 5),
-('7791234561039', 'Interruptor de luz','Interruptor simple para encendido de iluminacion',35.00, 5),
-('7791234561040', 'Portalámparas E27','Portalamparas con rosca E27 para iluminacion', 32.00, 5),
-('7791234561041', 'Cinta aisladora 20 m', 'Cinta aisladora para trabajos electricos', 40.00, 5),
+('7791234561037', 'Cable unipolar 2.5 mm','Rollo de cable unipolar de 2.5 mm cuadrados', 18500.00, 30.00, 5),
+('7791234561038', 'Tomacorriente doble','Tomacorriente doble para instalacion electrica', 4200.00, 35.00, 5),
+('7791234561039', 'Interruptor de luz','Interruptor simple para encendido de iluminacion',3500.00, 35.00, 5),
+('7791234561040', 'Portalámparas E27','Portalamparas con rosca E27 para iluminacion', 2600.00, 32.00, 5),
+('7791234561041', 'Cinta aisladora 20 m', 'Cinta aisladora para trabajos electricos', 1800.00, 40.00, 5),
 
-('7791234561042', 'Canilla de cocina', 'Canilla monocomando para instalacion de cocina',30.00, 6),
-('7791234561043', 'Flexible para agua 40 cm', 'Flexible de conexion para instalaciones de agua', 35.00, 6),
-('7791234561044', 'Codo PVC 90 grados', 'Codo de PVC de 110 mm para desague', 32.00, 6),
-('7791234561045', 'Cinta de teflon','Cinta selladora para conexiones roscadas', 45.00, 6),
-('7791234561046', 'Valvula de esfera 1/2 pulgada', 'Valvula de esfera para corte de paso de agua', 30.00, 6),
+('7791234561042', 'Canilla de cocina', 'Canilla monocomando para instalacion de cocina',22000.00, 30.00, 6),
+('7791234561043', 'Flexible para agua 40 cm', 'Flexible de conexion para instalaciones de agua', 4800.00, 35.00, 6),
+('7791234561044', 'Codo PVC 90 grados', 'Codo de PVC de 110 mm para desague', 5200.00, 32.00, 6),
+('7791234561045', 'Cinta de teflon','Cinta selladora para conexiones roscadas', 1500.00, 45.00, 6),
+('7791234561046', 'Valvula de esfera 1/2 pulgada', 'Valvula de esfera para corte de paso de agua', 7500.00, 30.00, 6),
 
-('7791234561047', 'Pala de punta', 'Pala de punta de acero con mango de madera', 35.00, 7),
-('7791234561048', 'Tijera de podar','Tijera manual para poda de ramas y plantas', 38.00, 7),
-('7791234561049', 'Aspersor de riego', 'Aspersor plastico para riego de jardines', 35.00, 7),
-('7791234561050', 'Linterna LED recargable','Linterna LED portatil para actividades al aire libre', 32.00, 7),
-('7791234561051', 'Cantimplora 1 litro', 'Cantimplora reutilizable para camping y excursiones', 30.00, 7),
+('7791234561047', 'Pala de punta', 'Pala de punta de acero con mango de madera', 14500.00, 35.00, 7),
+('7791234561048', 'Tijera de podar','Tijera manual para poda de ramas y plantas', 8800.00, 38.00, 7),
+('7791234561049', 'Aspersor de riego', 'Aspersor plastico para riego de jardines', 6200.00, 35.00, 7),
+('7791234561050', 'Linterna LED recargable','Linterna LED portatil para actividades al aire libre', 13500.00, 32.00, 7),
+('7791234561051', 'Cantimplora 1 litro', 'Cantimplora reutilizable para camping y excursiones', 5200.00, 30.00, 7),
 
-('7791234561052', 'Guantes de seguridad', 'Guantes de proteccion para trabajos generales', 40.00, 8),
-('7791234561053', 'Antiparras transparentes', 'Antiparras de proteccion ocular contra particulas',35.00, 8),
-('7791234561054', 'Protector auditivo','Protector auditivo tipo copa para ambientes ruidosos',32.00, 8),
-('7791234561055', 'Botines de seguridad','Botines de trabajo con puntera de proteccion',30.00, 8),
-('7791234561056', 'Chaleco reflectivo','Chaleco de alta visibilidad para trabajos industriales', 35.00, 8);
+('7791234561052', 'Guantes de seguridad', 'Guantes de proteccion para trabajos generales', 4800.00, 40.00, 8),
+('7791234561053', 'Antiparras transparentes', 'Antiparras de proteccion ocular contra particulas',3900.00, 35.00, 8),
+('7791234561054', 'Protector auditivo','Protector auditivo tipo copa para ambientes ruidosos',11500.00, 32.00, 8),
+('7791234561055', 'Botines de seguridad','Botines de trabajo con puntera de proteccion',28000.00, 30.00, 8),
+('7791234561056', 'Chaleco reflectivo','Chaleco de alta visibilidad para trabajos industriales', 4200.00, 35.00, 8);
 
 -- Verificacion: muestra todo lo que quedo cargado en la tabla
 SELECT * FROM PRODUCTO ORDER BY id_producto ASC;
@@ -148,14 +149,14 @@ SELECT * FROM PRODUCTO ORDER BY id_producto ASC;
 -- Prueba de Restriccion UNIQUE (esto DEBE tirar error al ejecutar).
 -- Se repite a proposito el codigo_barra del primer producto para
 -- demostrar que la restriccion UNIQUE de esa columna funciona.
-INSERT INTO PRODUCTO (codigo_barra, nombre_producto, descripcion, porcentaje_ganancia, id_categoria) VALUES
-('7791234561001', 'Martillo duplicado', 'Prueba de codigo de barra repetido', 40.00, 1);
+INSERT INTO PRODUCTO (codigo_barra, nombre_producto, descripcion, precio_costo, porcentaje_ganancia, id_categoria) VALUES
+('7791234561001', 'Martillo duplicado', 'Prueba de codigo de barra repetido', 10000.00, 40.00, 1);
 
 -- Prueba de Restriccion CHECK (esto tambien DEBE tirar error).
 -- Se carga un porcentaje_ganancia negativo a proposito para
 -- demostrar que la restriccion CHECK (porcentaje_ganancia >= 0) funciona.
-INSERT INTO PRODUCTO (codigo_barra, nombre_producto, descripcion, porcentaje_ganancia, id_categoria) VALUES
-('7791234561099', 'Producto con margen invalido', 'Prueba de CHECK porcentaje_ganancia', -10.00, 1);
+INSERT INTO PRODUCTO (codigo_barra, nombre_producto, descripcion, precio_costo, porcentaje_ganancia, id_categoria) VALUES
+('7791234561099', 'Producto con margen invalido', 'Prueba de CHECK porcentaje_ganancia', 1000.00, -10.00, 1);
 
 -- Ejemplo de UPDATE 1: corregir el margen de ganancia de un producto
 -- (se busca por id_producto)
@@ -352,46 +353,46 @@ WHERE nombre_localidad = 'Corrientes Capital';
 -- El ultimo valor de cada fila es el id_perfil al que corresponde
 -- (1=Administrador, 2=Vendedor, 3=Cajero, 4=Encargado de Stock,
 -- 5=Gerente de Sucursal, 6=Auditor, 7=Soporte Tecnico, 8=Comprador).
-INSERT INTO FUNCIONALIDAD (codigo_funcionalidad, nombre_funcionalidad, descripcion_funcionalidad, id_perfil) VALUES
+INSERT INTO FUNCIONALIDAD (codigo_funcionalidad, nombre_funcionalidad, descripcion_funcionalidad) VALUES
 -- Perfil 1: Administrador
-(101, 'Gestionar Usuarios', 'Alta, baja y modificacion de usuarios del sistema', 1),
-(109, 'Configurar Parametros', 'Modificar la configuracion general y parametros del sistema', 1),
-(110, 'Gestionar Sucursales', 'Alta, baja y modificacion de sucursales en la base de datos', 1),
+(101, 'Gestionar Usuarios', 'Alta, baja y modificacion de usuarios del sistema'),
+(109, 'Configurar Parametros', 'Modificar la configuracion general y parametros del sistema'),
+(110, 'Gestionar Sucursales', 'Alta, baja y modificacion de sucursales en la base de datos'),
 
 -- Perfil 2: Vendedor
-(102, 'Registrar Venta', 'Emitir un comprobante de venta y cobrar', 2),
-(111, 'Consultar Catalogo', 'Buscar productos, precios y disponibilidad en inventario', 2),
-(112, 'Registrar Cliente', 'Alta de nuevos clientes durante la atencion en mostrador', 2),
+(102, 'Registrar Venta', 'Emitir un comprobante de venta y cobrar'),
+(111, 'Consultar Catalogo', 'Buscar productos, precios y disponibilidad en inventario'),
+(112, 'Registrar Cliente', 'Alta de nuevos clientes durante la atencion en mostrador'),
 
 -- Perfil 3: Cajero
-(103, 'Arquear Caja', 'Realizar el arqueo de caja al cierre del turno', 3),
-(113, 'Anular Comprobante', 'Procesar la anulacion o nota de credito de una venta', 3),
-(114, 'Consultar Pagos', 'Verificar estado de transacciones y medios de pago', 3),
+(103, 'Arquear Caja', 'Realizar el arqueo de caja al cierre del turno'),
+(113, 'Anular Comprobante', 'Procesar la anulacion o nota de credito de una venta'),
+(114, 'Consultar Pagos', 'Verificar estado de transacciones y medios de pago'),
 
 -- Perfil 4: Encargado de Stock
-(104, 'Ajustar Stock', 'Modificar el stock de un producto por recepcion de mercaderia', 4),
-(115, 'Transferir Mercaderia', 'Registrar movimientos de stock entre distintas sucursales', 4),
-(116, 'Alertas de Stock Minimo', 'Consultar listado de productos proximos a agotarse', 4),
+(104, 'Ajustar Stock', 'Modificar el stock de un producto por recepcion de mercaderia'),
+(115, 'Transferir Mercaderia', 'Registrar movimientos de stock entre distintas sucursales'),
+(116, 'Alertas de Stock Minimo', 'Consultar listado de productos proximos a agotarse'),
 
 -- Perfil 5: Gerente de Sucursal
-(105, 'Ver Reportes de Sucursal', 'Consultar reportes de ventas y stock de la sucursal', 5),
-(117, 'Aprobar Descuentos', 'Autorizar descuentos especiales en ventas de la sucursal', 5),
-(118, 'Evaluar Vendedores', 'Consultar metricas y volumen de ventas por empleado', 5),
+(105, 'Ver Reportes de Sucursal', 'Consultar reportes de ventas y stock de la sucursal'),
+(117, 'Aprobar Descuentos', 'Autorizar descuentos especiales en ventas de la sucursal'),
+(118, 'Evaluar Vendedores', 'Consultar metricas y volumen de ventas por empleado'),
 
 -- Perfil 6: Auditor
-(106, 'Auditar Ventas', 'Revisar en modo lectura las ventas y pagos registrados', 6),
-(119, 'Exportar Registro de Auditoria', 'Generar reportes en PDF/Excel de movimientos de sistema', 6),
-(120, 'Consultar Historial de Precios', 'Revisar la trazabilidad de modificaciones de precios', 6),
+(106, 'Auditar Ventas', 'Revisar en modo lectura las ventas y pagos registrados'),
+(119, 'Exportar Registro de Auditoria', 'Generar reportes en PDF/Excel de movimientos de sistema'),
+(120, 'Consultar Historial de Precios', 'Revisar la trazabilidad de modificaciones de precios'),
 
 -- Perfil 7: Soporte Tecnico
-(107, 'Administrar Perfiles', 'Configurar perfiles y funcionalidades del sistema', 7),
-(121, 'Resetear Claves', 'Blanqueo y restablecimiento de contraseñas de usuarios', 7),
-(122, 'Ver Logs del Sistema', 'Consultar registro de errores y eventos del servidor', 7),
+(107, 'Administrar Perfiles', 'Configurar perfiles y funcionalidades del sistema'),
+(121, 'Resetear Claves', 'Blanqueo y restablecimiento de contraseñas de usuarios'),
+(122, 'Ver Logs del Sistema', 'Consultar registro de errores y eventos del servidor'),
 
 -- Perfil 8: Comprador
-(108, 'Generar Pedido a Proveedor', 'Crear un pedido de reposicion a un proveedor', 8),
-(123, 'Gestionar Proveedores', 'Alta y actualizacion de datos de proveedores habituales', 8),
-(124, 'Evaluar Costos', 'Comparar presupuestos y listas de precios de proveedores', 8);
+(108, 'Generar Pedido a Proveedor', 'Crear un pedido de reposicion a un proveedor'),
+(123, 'Gestionar Proveedores', 'Alta y actualizacion de datos de proveedores habituales'),
+(124, 'Evaluar Costos', 'Comparar presupuestos y listas de precios de proveedores');
 
 -- Verificacion: muestra las funcionalidades cargadas
 SELECT * FROM FUNCIONALIDAD ORDER BY id_funcionalidad ASC;
@@ -399,13 +400,51 @@ SELECT * FROM FUNCIONALIDAD ORDER BY id_funcionalidad ASC;
 -- Prueba de Restriccion UNIQUE (esto DEBE tirar error al ejecutar).
 -- Se repite a proposito el codigo_funcionalidad 101 para demostrar
 -- que la restriccion UNIQUE de esa columna funciona.
-INSERT INTO FUNCIONALIDAD (codigo_funcionalidad, nombre_funcionalidad, descripcion_funcionalidad, id_perfil) VALUES
-(101, 'Funcionalidad Duplicada', 'Prueba de codigo repetido', 1);
+INSERT INTO FUNCIONALIDAD (codigo_funcionalidad, nombre_funcionalidad, descripcion_funcionalidad) VALUES
+(101, 'Funcionalidad Duplicada', 'Prueba de codigo repetido');
 
 -- Ejemplo de UPDATE: actualizar la descripcion de una funcionalidad
 UPDATE FUNCIONALIDAD
 SET descripcion_funcionalidad = 'Alta, baja, modificacion y bloqueo de usuarios del sistema'
 WHERE codigo_funcionalidad = 101;
+
+-- ========================================================================================================================================================
+-- ========================================================================================================================================================
+-- PERFIL_FUNCIONALIDAD: relacion entre perfiles y funcionalidades.
+-- Permite que una funcionalidad pueda ser utilizada por varios perfiles.
+-- El Administrador tiene acceso a todas las funcionalidades cargadas.
+-- ============================================================
+INSERT INTO PERFIL_FUNCIONALIDAD (id_perfil, id_funcionalidad) VALUES
+-- Perfil 1: Administrador - acceso total
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6),
+(1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12),
+(1, 13), (1, 14), (1, 15), (1, 16), (1, 17), (1, 18),
+(1, 19), (1, 20), (1, 21), (1, 22), (1, 23), (1, 24),
+
+-- Perfil 2: Vendedor
+(2, 4), (2, 5), (2, 6),
+
+-- Perfil 3: Cajero
+(3, 7), (3, 8), (3, 9),
+
+-- Perfil 4: Encargado de Stock
+(4, 10), (4, 11), (4, 12),
+
+-- Perfil 5: Gerente de Sucursal
+(5, 13), (5, 14), (5, 15),
+
+-- Perfil 6: Auditor
+(6, 16), (6, 17), (6, 18),
+
+-- Perfil 7: Soporte Tecnico
+(7, 19), (7, 20), (7, 21),
+
+-- Perfil 8: Comprador
+(8, 22), (8, 23), (8, 24);
+
+-- Verificacion: muestra las funcionalidades asignadas a cada perfil
+SELECT * FROM PERFIL_FUNCIONALIDAD
+ORDER BY id_perfil ASC, id_funcionalidad ASC;
 
 
 -- ========================================================================================================================================================
