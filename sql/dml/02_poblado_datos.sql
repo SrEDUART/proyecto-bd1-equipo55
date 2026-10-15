@@ -190,19 +190,50 @@ SET codigo_postal = '3401'
 WHERE nombre_localidad = 'Corrientes Capital';
 
 
--- Carga de funcionalidades de prueba, una por cada perfil existente.
+-- Carga de funcionalidades de prueba (3 por cada perfil existente)
 -- El ultimo valor de cada fila es el id_perfil al que corresponde
 -- (1=Administrador, 2=Vendedor, 3=Cajero, 4=Encargado de Stock,
 -- 5=Gerente de Sucursal, 6=Auditor, 7=Soporte Tecnico, 8=Comprador).
 INSERT INTO FUNCIONALIDAD (codigo_funcionalidad, nombre_funcionalidad, descripcion_funcionalidad, id_perfil) VALUES
+-- Perfil 1: Administrador
 (101, 'Gestionar Usuarios', 'Alta, baja y modificacion de usuarios del sistema', 1),
+(109, 'Configurar Parametros', 'Modificar la configuracion general y parametros del sistema', 1),
+(110, 'Gestionar Sucursales', 'Alta, baja y modificacion de sucursales en la base de datos', 1),
+
+-- Perfil 2: Vendedor
 (102, 'Registrar Venta', 'Emitir un comprobante de venta y cobrar', 2),
+(111, 'Consultar Catalogo', 'Buscar productos, precios y disponibilidad en inventario', 2),
+(112, 'Registrar Cliente', 'Alta de nuevos clientes durante la atencion en mostrador', 2),
+
+-- Perfil 3: Cajero
 (103, 'Arquear Caja', 'Realizar el arqueo de caja al cierre del turno', 3),
+(113, 'Anular Comprobante', 'Procesar la anulacion o nota de credito de una venta', 3),
+(114, 'Consultar Pagos', 'Verificar estado de transacciones y medios de pago', 3),
+
+-- Perfil 4: Encargado de Stock
 (104, 'Ajustar Stock', 'Modificar el stock de un producto por recepcion de mercaderia', 4),
+(115, 'Transferir Mercaderia', 'Registrar movimientos de stock entre distintas sucursales', 4),
+(116, 'Alertas de Stock Minimo', 'Consultar listado de productos proximos a agotarse', 4),
+
+-- Perfil 5: Gerente de Sucursal
 (105, 'Ver Reportes de Sucursal', 'Consultar reportes de ventas y stock de la sucursal', 5),
+(117, 'Aprobar Descuentos', 'Autorizar descuentos especiales en ventas de la sucursal', 5),
+(118, 'Evaluar Vendedores', 'Consultar metricas y volumen de ventas por empleado', 5),
+
+-- Perfil 6: Auditor
 (106, 'Auditar Ventas', 'Revisar en modo lectura las ventas y pagos registrados', 6),
+(119, 'Exportar Registro de Auditoria', 'Generar reportes en PDF/Excel de movimientos de sistema', 6),
+(120, 'Consultar Historial de Precios', 'Revisar la trazabilidad de modificaciones de precios', 6),
+
+-- Perfil 7: Soporte Tecnico
 (107, 'Administrar Perfiles', 'Configurar perfiles y funcionalidades del sistema', 7),
-(108, 'Generar Pedido a Proveedor', 'Crear un pedido de reposicion a un proveedor', 8);
+(121, 'Resetear Claves', 'Blanqueo y restablecimiento de contraseñas de usuarios', 7),
+(122, 'Ver Logs del Sistema', 'Consultar registro de errores y eventos del servidor', 7),
+
+-- Perfil 8: Comprador
+(108, 'Generar Pedido a Proveedor', 'Crear un pedido de reposicion a un proveedor', 8),
+(123, 'Gestionar Proveedores', 'Alta y actualizacion de datos de proveedores habituales', 8),
+(124, 'Evaluar Costos', 'Comparar presupuestos y listas de precios de proveedores', 8);
 
 -- Verificacion: muestra las funcionalidades cargadas
 SELECT * FROM FUNCIONALIDAD ORDER BY id_funcionalidad ASC;
