@@ -1092,6 +1092,57 @@ SET correo = 'lucas.gomez.nuevo@clientes.test'
 WHERE id_cliente = 1;
 
 
+/*
+-- ALTERNATIVA: carga masiva de 300 clientes con WHILE
+DECLARE @i INT = 1, @localidad INT, @id_direccion INT;
+DECLARE @nombre VARCHAR(50), @apellido VARCHAR(50), @calle VARCHAR(50);
+
+WHILE @i <= 300
+BEGIN
+    SET @localidad = ((@i - 1) % 128) + 1;
+
+    SET @nombre = CHOOSE(((@i - 1) % 20) + 1,
+        'Lucas','Mateo','Sofia','Valentina','Martin',
+        'Camila','Nicolas','Lucia','Joaquin','Martina',
+        'Tomas','Julieta','Agustin','Micaela','Franco',
+        'Carolina','Federico','Florencia','Bruno','Paula');
+
+    SET @apellido = CHOOSE((((@i - 1) * 7) % 20) + 1,
+        'Gomez','Fernandez','Ramirez','Benitez','Martinez',
+        'Sosa','Romero','Aguirre','Acosta','Lopez',
+        'Gimenez','Torres','Rojas','Medina','Silva',
+        'Ortiz','Mendez','Caceres','Ruiz','Pereira');
+
+    SET @calle = CHOOSE(((@i - 1) % 15) + 1,
+        'San Martin','Belgrano','Junin','Cordoba','Colon',
+        '9 de Julio','Santa Fe','La Rioja','Catamarca','Mendoza',
+        'Salta','Buenos Aires','Lavalle','Rivadavia','Sarmiento');
+
+    INSERT INTO DIRECCION (calle, altura, id_localidad)
+    VALUES (@calle, 100 + ((@i * 173) % 3900), @localidad);
+
+    SET @id_direccion = SCOPE_IDENTITY();
+
+    INSERT INTO CLIENTE (nombre, apellido, dni, correo, id_direccion)
+    VALUES (
+        @nombre,
+        @apellido,
+        45000000 + @i,
+        LOWER(CONCAT(@nombre,'.',@apellido,'.',@i,'@clientes.test')),
+        @id_direccion
+    );
+
+    INSERT INTO CLIENTE_TELEFONO (telefono, id_cliente)
+    VALUES (
+        CONCAT('371', RIGHT('0000000' + CAST(@i AS VARCHAR(7)), 7)),
+        SCOPE_IDENTITY()
+    );
+
+    SET @i = @i + 1;
+END;
+*/
+
+
 -- ========================================================================================================================================================
 -- ========================================================================================================================================================
 -- SUCURSAL: sucursales disponibles de la ferreteria.
@@ -1222,6 +1273,77 @@ UPDATE USUARIO
 SET correo = 'maria.lopez.actualizado@ferreteria.test'
 WHERE id_usuario = 2;
 
+
+/*
+-- ALTERNATIVA: carga masiva de 30 usuarios con WHILE
+DECLARE @i INT = 1, @sucursal INT, @localidad INT, @perfil INT, @id_direccion INT;
+DECLARE @nombre VARCHAR(50), @apellido VARCHAR(50), @calle VARCHAR(50);
+
+WHILE @i <= 30
+BEGIN
+    SET @sucursal = ((@i - 1) / 10) + 1;
+
+    SELECT @localidad = D.id_localidad
+    FROM SUCURSAL S
+    INNER JOIN DIRECCION D ON S.id_direccion = D.id_direccion
+    WHERE S.id_sucursal = @sucursal;
+
+    SET @perfil = CASE ((@i - 1) % 10) + 1
+        WHEN 1 THEN 1
+        WHEN 2 THEN 2
+        WHEN 3 THEN 2
+        WHEN 4 THEN 2
+        WHEN 5 THEN 3
+        WHEN 6 THEN 4
+        WHEN 7 THEN 5
+        WHEN 8 THEN 6
+        WHEN 9 THEN 7
+        WHEN 10 THEN 8
+    END;
+
+    SET @nombre = CHOOSE(((@i - 1) % 10) + 1,
+        'Juan','Maria','Pedro','Ana','Diego',
+        'Lucia','Matias','Florencia','Federico','Julieta');
+
+    SET @apellido = CHOOSE(((@i - 1) % 10) + 1,
+        'Perez','Lopez','Acosta','Gimenez','Fernandez',
+        'Gomez','Sosa','Ramirez','Benitez','Romero');
+
+    SET @calle = CHOOSE(((@i - 1) % 10) + 1,
+        'San Martin','Belgrano','Junin','Cordoba','Colon',
+        '9 de Julio','Santa Fe','La Rioja','Mendoza','Salta');
+
+    INSERT INTO DIRECCION (calle, altura, id_localidad)
+    VALUES (@calle, 300 + ((@i * 157) % 2700), @localidad);
+
+    SET @id_direccion = SCOPE_IDENTITY();
+
+    INSERT INTO USUARIO (
+        nombre, apellido, dni, nombre_usuario, contraseña_hash,
+        correo, fecha_nacimiento, id_direccion, id_perfil, id_sucursal
+    )
+    VALUES (
+        @nombre,
+        @apellido,
+        32000000 + (@i * 13791),
+        LOWER(CONCAT(LEFT(@nombre,1), @apellido, @sucursal, @i)),
+        CONCAT('hash_usuario_', @i),
+        LOWER(CONCAT(@nombre,'.',@apellido,'.',@i,'@ferreteria.test')),
+        DATEADD(DAY, @i * 197, '1985-01-01'),
+        @id_direccion,
+        @perfil,
+        @sucursal
+    );
+
+    INSERT INTO USUARIO_TELEFONO (telefono, id_usuario)
+    VALUES (
+        CONCAT('372', RIGHT('0000000' + CAST(@i AS VARCHAR(7)), 7)),
+        SCOPE_IDENTITY()
+    );
+
+    SET @i = @i + 1;
+END;
+*/
 
 
 -- ========================================================================================================================================================
