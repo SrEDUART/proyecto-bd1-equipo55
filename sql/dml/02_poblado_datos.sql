@@ -450,6 +450,127 @@ UPDATE CLIENTE
 SET correo = 'martin.gomez.nuevo@mail.com'
 WHERE id_cliente = 1;
 
+-- ============================================================
+-- CARGA MASIVA DE CLIENTES
+-- Se agregan 300 clientes distribuidos entre las localidades
+-- existentes del sistema.
+-- ============================================================
+
+DECLARE @cliente_i INT = 1;
+DECLARE @cliente_localidad INT;
+DECLARE @cliente_direccion INT;
+DECLARE @cliente_nombre VARCHAR(50);
+DECLARE @cliente_apellido VARCHAR(50);
+DECLARE @cliente_calle VARCHAR(50);
+
+WHILE @cliente_i <= 300
+BEGIN
+
+    -- Evita cargar nuevamente el mismo cliente
+    -- si el script se ejecuta mas de una vez.
+    IF NOT EXISTS (
+        SELECT 1
+        FROM CLIENTE
+        WHERE dni = 45000000 + @cliente_i
+    )
+    BEGIN
+
+        -- Distribuye los clientes entre las 8 localidades cargadas.
+        SET @cliente_localidad = ((@cliente_i - 1) % 8) + 1;
+
+        -- Selecciona nombres de una lista.
+        SET @cliente_nombre = CHOOSE(
+            ((@cliente_i - 1) % 40) + 1,
+            'Lucas', 'Mateo', 'Sofia', 'Valentina', 'Martin',
+            'Camila', 'Nicolas', 'Lucia', 'Joaquin', 'Martina',
+            'Tomas', 'Julieta', 'Agustin', 'Micaela', 'Franco',
+            'Carolina', 'Federico', 'Florencia', 'Bruno', 'Paula',
+            'Santiago', 'Victoria', 'Ignacio', 'Milagros', 'Benjamin',
+            'Agustina', 'Lautaro', 'Antonella', 'Gonzalo', 'Rocio',
+            'Facundo', 'Candela', 'Emiliano', 'Josefina', 'Marcos',
+            'Belen', 'Ramiro', 'Daniela', 'Thiago', 'Malena'
+        );
+
+        -- Selecciona apellidos de una lista.
+       SET @cliente_apellido = CHOOSE(
+            ((@cliente_i - 1) % 40) + 1,
+            'Gomez', 'Fernandez', 'Ramirez', 'Benitez', 'Martinez',
+            'Sosa', 'Romero', 'Aguirre', 'Acosta', 'Lopez',
+            'Gimenez', 'Torres', 'Rojas', 'Medina', 'Silva',
+            'Ortiz', 'Mendez', 'Caceres', 'Ruiz', 'Pereira',
+            'Diaz', 'Rodriguez', 'Gonzalez', 'Garcia', 'Sanchez',
+            'Vera', 'Escobar', 'Ojeda', 'Maidana', 'Godoy',
+            'Cardozo', 'Barrios', 'Navarro', 'Nunez', 'Alvarez',
+            'Flores', 'Morales', 'Villalba', 'Cabral', 'Ferreyra'
+        );
+
+        -- Selecciona una calle.
+        SET @cliente_calle = CHOOSE(
+            ((@cliente_i - 1) % 30) + 1,
+            'San Martin', 'Belgrano', 'Junin', 'Cordoba', 'Colon',
+            '9 de Julio', 'Santa Fe', 'La Rioja', 'Catamarca', 'Mendoza',
+            'Salta', 'Buenos Aires', 'Lavalle', 'Rivadavia', 'Sarmiento',
+            '25 de Mayo', 'Hipolito Yrigoyen', 'Quintana', 'Pellegrini', 'Bolivar',
+            'Moreno', 'Necochea', 'Peru', 'Brasil', 'Chacabuco',
+            'Entre Rios', 'San Juan', 'Tucuman', 'Uruguay', 'Ayacucho'
+        );
+
+        -- Primero se crea la direccion del cliente.
+        INSERT INTO DIRECCION (
+            calle,
+            altura,
+            id_localidad
+        )
+        VALUES (
+            @cliente_calle,
+            100 + ((@cliente_i * 37) % 3900),
+            @cliente_localidad
+        );
+
+        -- Guarda el id de la direccion que se acaba de crear.
+        SET @cliente_direccion = SCOPE_IDENTITY();
+
+        -- Ahora se crea el cliente usando esa direccion.
+        INSERT INTO CLIENTE (
+            nombre,
+            apellido,
+            dni,
+            correo,
+            id_direccion
+        )
+        VALUES (
+            @cliente_nombre,
+            @cliente_apellido,
+            45000000 + @cliente_i,
+
+            LOWER(
+                CONCAT(
+                    @cliente_nombre,
+                    '.',
+                    @cliente_apellido,
+                    '.',
+                    RIGHT(
+                        '0000' + CAST(@cliente_i AS VARCHAR(4)),
+                        4
+                    ),
+                    '@clientes.test'
+                )
+            ),
+
+            @cliente_direccion
+        );
+
+    END;
+
+    SET @cliente_i = @cliente_i + 1;
+
+END;
+
+
+-- Verificacion
+SELECT COUNT(*) AS cantidad_clientes
+FROM CLIENTE;
+
 
 -- ============================================================
 -- SUCURSAL: sucursales disponibles de la ferreteria.
