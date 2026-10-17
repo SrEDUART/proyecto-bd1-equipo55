@@ -63,7 +63,10 @@ INNER JOIN PRODUCTO
 
 WHERE VENTA.id_venta = @id_venta_busqueda;
 ```
-Ejemplo de resultado:
+---
 
-Nro Venta,Fecha y Hora,Tipo Factura,Sucursal,Cliente,Producto,Cantidad,Precio Unitario,Subtotal Renglón,Descuento (%),Subtotal General,Total Final
-1,2026-02-20 04:34:11.000,B,Sucursal Centro Corrientes,Lucas Gomez,Martillo carpintero,3,15000.00,45000.00,0.00,45000.00,45000.00
+## 4. Ejemplo de resultado 
+
+| Nro Venta | Fecha y Hora | Tipo Factura | Sucursal | Cliente | Producto | Cantidad | Precio Unitario | Subtotal Renglón | Descuento (%) | Subtotal General | Total Final |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 2026-02-20 04:34:11.000 | B | Sucursal Centro Corrientes | Lucas Gomez | Martillo carpintero | 3 | 15000.00 | 45000.00 | 0.00 | 45000.00 | 45000.00 |
