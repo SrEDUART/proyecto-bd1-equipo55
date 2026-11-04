@@ -35,10 +35,7 @@ EXEC sp_ModificarCliente 301, 'Carlos Alberto', 'Benitez', 48999888, 'carlos.mod
 
 -- prueba de eliminacion (baja logica)
 EXEC sp_EliminarCliente 301;
-
-
-------------------------------------------------------------------------
-
+```
 ## 4. Funciones almacenadas
 
 Además de los procedimientos almacenados destinados a realizar
@@ -64,13 +61,6 @@ posteriormente. El resultado permite conocer cuánto representa
 económicamente cada renglón de una venta luego de aplicar el descuento
 correspondiente.
 
-**Evidencia de funcionamiento:** en la siguiente captura se observa el
-resultado de ejecutar la función para distintos detalles de venta, junto
-con los datos utilizados para realizar el cálculo.
-
-![Evidencia de
-fn_ImporteDetalleVenta](evidencias/fn_ImporteDetalleVenta.png)
-
 ### 4.2. `fn_TotalGastadoCliente`
 
 Esta función obtiene el importe total gastado por un cliente a partir de
@@ -82,12 +72,6 @@ Su utilidad consiste en consultar de manera sencilla el total de compras
 acumuladas de cada cliente. El resultado puede incorporarse a consultas
 que permitan analizar el historial de compras o conocer el volumen de
 operaciones asociado a cada persona.
-
-**Evidencia de funcionamiento:** la captura muestra los clientes
-consultados y el total gastado calculado por la función para cada uno.
-
-![Evidencia de
-fn_TotalGastadoCliente](evidencias/fn_TotalGastadoCliente.png)
 
 ### 4.3. `fn_StockDisponible`
 
@@ -101,14 +85,6 @@ confundirlo con el stock que el mismo producto pueda tener en otras
 sucursales. Esto resulta útil para las tareas de control y consulta de
 existencias.
 
-**Evidencia de funcionamiento:** en la captura se comparan los valores
-obtenidos directamente desde la tabla `INVENTARIO` (`stock_guardado`)
-con los devueltos por la función (`stock_funcion`). La coincidencia de
-ambos valores permite comprobar que la función recupera correctamente el
-stock registrado para cada producto y sucursal.
-
-![Evidencia de fn_StockDisponible](evidencias/fn_StockDisponible.png)
-
 ### 4.4. Verificación general
 
 Las tres funciones se probaron mediante consultas en SQL Server
@@ -117,4 +93,4 @@ y el mensaje de ejecución correcta.
 
 Estas pruebas permiten verificar que las funciones reciben los
 parámetros correspondientes y devuelven los valores esperados para los
-datos cargados en la base de datos `ferreteria`.
+datos cargados en la base de datos `proyectoFerreteria`.
