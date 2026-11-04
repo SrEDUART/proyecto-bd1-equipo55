@@ -2,7 +2,9 @@ USE proyectoFerreteria;
 GO
 
 
--- PRUEBAS
+-- demostracion de seguridad (pruebas)
+
+
 
 -- prueba 1: intento de insercion directa (debe fallar por acceso denegado)
 EXECUTE AS USER = 'usuario_vendedor';
@@ -21,10 +23,7 @@ GO
 -- prueba 2: ejecucion a traves del procedimiento almacenado (debe funcionar)
 EXECUTE AS USER = 'usuario_vendedor';
 
-IF NOT EXISTS (SELECT 1 FROM CLIENTE WHERE dni = 47111222)
-BEGIN
-    EXEC sp_InsertarCliente 'Mariana', 'Gomez', 47111222, 'mariana.gomez@test.com', 31;
-END
+EXEC sp_InsertarCliente 'Mariana', 'Gomez', 47111222, 'mariana.gomez@test.com', 31;
 
 REVERT;
 GO
