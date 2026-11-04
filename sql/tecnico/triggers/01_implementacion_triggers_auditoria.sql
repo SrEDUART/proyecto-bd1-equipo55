@@ -1,4 +1,4 @@
-USE proyectoFerreteria;
+USE ProyectoFerreteria;
 GO
 
 -- Conserva los valores anteriores de PRODUCTO en operaciones UPDATE y DELETE.

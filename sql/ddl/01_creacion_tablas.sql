@@ -1,3 +1,15 @@
+USE master;
+GO
+
+IF DB_ID('ProyectoFerreteria') IS NULL
+BEGIN
+    CREATE DATABASE ProyectoFerreteria;
+END;
+GO
+
+USE ProyectoFerreteria;
+GO
+
 -- ========================================================================================================================================================
 -- ========================================================================================================================================================
 -- PROVINCIA: listado de provincias utilizadas en las direcciones

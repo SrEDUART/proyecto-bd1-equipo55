@@ -1,3 +1,6 @@
+USE ProyectoFerreteria;
+GO
+
 /*
   SCRIPT SQL DE DEMOSTRACION DE FUNCIONES ALMACENADAS
 
@@ -10,9 +13,6 @@
     - Medición de tiempo y lecturas con STATISTICS TIME e IO.
     - Verificación de coincidencia de resultados.
 */
-
-USE ferreteria;
-GO
 
 SET NOCOUNT ON;
 GO

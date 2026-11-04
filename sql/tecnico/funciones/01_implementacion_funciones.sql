@@ -1,3 +1,6 @@
+USE ProyectoFerreteria;
+GO
+
 /*
   SCRIPT SQL DE IMPLEMENTACION: FUNCIONES ALMACENADAS
   Proyecto: Ferreteria
@@ -16,9 +19,6 @@
   Este script contiene solamente la definicion de las funciones; las pruebas
   de funcionamiento y comparaciones se encuentran en el archivo de demostracion.
 */
-
-USE ferreteria;
-GO
 
 SET NOCOUNT ON;
 GO

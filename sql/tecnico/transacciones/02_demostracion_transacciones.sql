@@ -1,79 +1,188 @@
-USE proyectoFerreteria;
+USE ProyectoFerreteria;
 GO
 
--- ===================================================================================================
--- ETAPA 5 - TRANSACCIONES (DEMOSTRACIÓN)
--- Integrante 3
--- Objetivo: Probar la transaccion exitosa y la fallida.
--- ===================================================================================================
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
 
-PRINT '--- ESTADO INICIAL ---';
-SELECT id_producto, nombre_producto, stock FROM INVENTARIO WHERE id_producto = 1 AND id_sucursal = 1;
-SELECT TOP 1 id_venta FROM VENTA ORDER BY id_venta DESC;
-GO
+DECLARE @id_cliente INT;
+DECLARE @id_usuario INT;
+DECLARE @id_sucursal INT;
+DECLARE @id_producto INT;
+DECLARE @cantidad INT = 1;
+DECLARE @stock_exitoso INT;
+DECLARE @stock_fallida INT;
+DECLARE @id_venta_base INT;
+DECLARE @id_venta_exitosa INT;
+DECLARE @id_detalle_exitosa INT;
+DECLARE @id_venta_fallida INT;
 
+SELECT TOP (1)
+    @id_cliente = C.id_cliente,
+    @id_usuario = U.id_usuario,
+    @id_sucursal = S.id_sucursal,
+    @id_producto = P.id_producto
+FROM dbo.INVENTARIO AS I
+INNER JOIN dbo.PRODUCTO AS P
+    ON P.id_producto = I.id_producto
+INNER JOIN dbo.SUCURSAL AS S
+    ON S.id_sucursal = I.id_sucursal
+INNER JOIN dbo.USUARIO AS U
+    ON U.id_sucursal = S.id_sucursal
+CROSS JOIN dbo.CLIENTE AS C
+WHERE I.stock > 0
+  AND P.eliminado_en IS NULL
+  AND S.eliminado_en IS NULL
+  AND U.eliminado_en IS NULL
+  AND C.eliminado_en IS NULL
+ORDER BY I.stock DESC, I.id_sucursal, I.id_producto, U.id_usuario, C.id_cliente;
 
--- ---------------------------------------------------------
--- CASO 1: TRANSACCIÓN EXITOSA (Usando el Procedimiento)
--- ---------------------------------------------------------
-PRINT '--- CASO 1: TRANSACCION EXITOSA ---';
+IF @id_cliente IS NULL
+    THROW 54001, 'No se encontró una combinación activa de cliente, usuario, sucursal y producto con stock.', 1;
 
--- Ejecutamos el SP (Simulamos la venta de 2 martillos)
-EXEC dbo.sp_RegistrarVentaTransaccion 
-    @id_cliente = 1, 
-    @id_usuario = 1, 
-    @id_sucursal = 1, 
-    @id_producto = 1, 
-    @cantidad = 2;
-GO
-
--- Verificamos que los datos se guardaron y el stock bajó
-SELECT TOP 1 id_venta, tipo_factura FROM VENTA ORDER BY id_venta DESC;
-SELECT TOP 1 id_detalle, cantidad, id_venta FROM DETALLE_VENTA ORDER BY id_detalle DESC;
-SELECT id_producto, nombre_producto, stock FROM INVENTARIO WHERE id_producto = 1 AND id_sucursal = 1;
-GO
-
-
--- ---------------------------------------------------------
--- CASO 2: TRANSACCIÓN FALLIDA A PROPÓSITO
--- ---------------------------------------------------------
-PRINT '--- CASO 2: TRANSACCION FALLIDA (ERROR FORZADO) ---';
-
+PRINT '--- CASO 1: VENTA EXITOSA, REVERTIDA AL FINAL ---';
 BEGIN TRY
     BEGIN TRANSACTION;
 
-    -- 1. Insertar en VENTA (Esto se va a ejecutar)
-    INSERT INTO VENTA (tipo_factura, descuento, id_sucursal, id_cliente, id_usuario) 
-    VALUES ('A', 0.00, 1, 1, 1);
-    
-    DECLARE @id_venta_fallida INT = SCOPE_IDENTITY();
+    -- El bloqueo de rango permite identificar la venta creada dentro de esta prueba.
+    SELECT @id_venta_base = COALESCE(MAX(id_venta), 0)
+    FROM dbo.VENTA WITH (UPDLOCK, HOLDLOCK);
 
-    -- 2. FORZAMOS EL ERROR (Producto 9999 no existe)
-    PRINT 'Forzando error con producto inexistente...';
-    INSERT INTO DETALLE_VENTA (cantidad, precio_unitario_catalogo, id_producto, id_venta)
-    VALUES (1, 15000.00, 9999, @id_venta_fallida);
+    PRINT 'Estado inicial de producto e inventario:';
+    SELECT
+        I.id_producto,
+        P.nombre_producto,
+        I.id_sucursal,
+        I.stock AS stock_inicial,
+        @stock_exitoso = I.stock
+    FROM dbo.INVENTARIO AS I
+    INNER JOIN dbo.PRODUCTO AS P
+        ON P.id_producto = I.id_producto
+    WHERE I.id_producto = @id_producto
+      AND I.id_sucursal = @id_sucursal;
 
-    -- 3. Actualizar Stock
-    UPDATE INVENTARIO 
-    SET stock = stock - 1 
-    WHERE id_producto = 1 AND id_sucursal = 1;
+    EXEC dbo.sp_RegistrarVentaTransaccion
+        @id_cliente = @id_cliente,
+        @id_usuario = @id_usuario,
+        @id_sucursal = @id_sucursal,
+        @id_producto = @id_producto,
+        @cantidad = @cantidad;
 
-    COMMIT TRANSACTION;
+    SELECT @id_venta_exitosa = MAX(id_venta)
+    FROM dbo.VENTA
+    WHERE id_venta > @id_venta_base;
+
+    IF @id_venta_exitosa IS NULL
+        THROW 54002, 'El procedimiento no creó la venta esperada.', 1;
+
+    PRINT 'Venta creada:';
+    SELECT id_venta, fecha_hora, tipo_factura, descuento, id_sucursal, id_cliente, id_usuario
+    FROM dbo.VENTA
+    WHERE id_venta = @id_venta_exitosa;
+
+    PRINT 'Detalle creado:';
+    SELECT @id_detalle_exitosa = id_detalle
+    FROM dbo.DETALLE_VENTA
+    WHERE id_venta = @id_venta_exitosa;
+
+    SELECT id_detalle, cantidad, precio_unitario_catalogo, id_producto, id_venta
+    FROM dbo.DETALLE_VENTA
+    WHERE id_venta = @id_venta_exitosa;
+
+    PRINT 'Stock luego de la venta:';
+    SELECT I.id_producto, P.nombre_producto, I.id_sucursal, I.stock AS stock_luego_de_venta
+    FROM dbo.INVENTARIO AS I
+    INNER JOIN dbo.PRODUCTO AS P
+        ON P.id_producto = I.id_producto
+    WHERE I.id_producto = @id_producto
+      AND I.id_sucursal = @id_sucursal;
+
+    ROLLBACK TRANSACTION;
+
+    PRINT 'Comprobación de rollback de la prueba exitosa (venta y detalle ausentes; stock restaurado):';
+    SELECT id_venta
+    FROM dbo.VENTA
+    WHERE id_venta = @id_venta_exitosa;
+
+    SELECT id_detalle
+    FROM dbo.DETALLE_VENTA
+    WHERE id_detalle = @id_detalle_exitosa;
+
+    SELECT
+        I.id_producto,
+        I.id_sucursal,
+        I.stock AS stock_despues_del_rollback,
+        @stock_exitoso AS stock_inicial
+    FROM dbo.INVENTARIO AS I
+    WHERE I.id_producto = @id_producto
+      AND I.id_sucursal = @id_sucursal;
 END TRY
 BEGIN CATCH
-    IF @@TRANCOUNT > 0
-    BEGIN
+    IF XACT_STATE() <> 0
         ROLLBACK TRANSACTION;
-    END
-    PRINT 'ERROR CAPTURADO: ' + ERROR_MESSAGE();
-    PRINT 'La venta fallida NO se guardó y el stock no cambió.';
-END CATCH;
-GO
 
--- ---------------------------------------------------------
--- VERIFICACIÓN FINAL
--- ---------------------------------------------------------
-PRINT '--- VERIFICACION FINAL (No debe haber ventas nuevas del caso 2) ---';
-SELECT TOP 2 id_venta, tipo_factura FROM VENTA ORDER BY id_venta DESC;
-SELECT id_producto, nombre_producto, stock FROM INVENTARIO WHERE id_producto = 1 AND id_sucursal = 1;
+    THROW;
+END CATCH;
+
+PRINT '--- CASO 2: ERROR REAL DESPUÉS DE INSERTAR VENTA ---';
+BEGIN TRY
+    BEGIN TRANSACTION;
+
+    SELECT @stock_fallida = I.stock
+    FROM dbo.INVENTARIO AS I
+    WHERE I.id_producto = @id_producto
+      AND I.id_sucursal = @id_sucursal;
+
+    INSERT INTO dbo.VENTA (
+        tipo_factura,
+        descuento,
+        id_sucursal,
+        id_cliente,
+        id_usuario
+    )
+    VALUES ('A', 0.00, @id_sucursal, @id_cliente, @id_usuario);
+
+    SET @id_venta_fallida = CONVERT(INT, SCOPE_IDENTITY());
+    PRINT 'Encabezado insertado; se provoca un error de CHECK al insertar un detalle con precio cero.';
+
+    INSERT INTO dbo.DETALLE_VENTA (
+        cantidad,
+        precio_unitario_catalogo,
+        id_producto,
+        id_venta
+    )
+    VALUES (@cantidad, 0.00, @id_producto, @id_venta_fallida);
+
+    COMMIT TRANSACTION;
+    THROW 54003, 'La prueba fallida no provocó el error esperado.', 1;
+END TRY
+BEGIN CATCH
+    IF XACT_STATE() <> 0
+        ROLLBACK TRANSACTION;
+
+    IF ERROR_NUMBER() = 54003
+        THROW;
+
+    IF ERROR_NUMBER() <> 547
+        THROW;
+
+    PRINT 'Error real capturado; la transacción fue revertida: ' + ERROR_MESSAGE();
+END CATCH;
+
+PRINT 'Comprobación del rollback de la prueba fallida (venta y detalle ausentes; stock sin cambios):';
+SELECT id_venta
+FROM dbo.VENTA
+WHERE id_venta = @id_venta_fallida;
+
+SELECT id_detalle
+FROM dbo.DETALLE_VENTA
+WHERE id_venta = @id_venta_fallida;
+
+SELECT
+    I.id_producto,
+    I.id_sucursal,
+    I.stock AS stock_despues_del_rollback,
+    @stock_fallida AS stock_antes_de_la_prueba_fallida
+FROM dbo.INVENTARIO AS I
+WHERE I.id_producto = @id_producto
+  AND I.id_sucursal = @id_sucursal;
 GO
