@@ -22,7 +22,6 @@ END;
 GO
 
 
-
 -- modificar cliente
 IF OBJECT_ID('sp_ModificarCliente', 'P') IS NOT NULL
     DROP PROCEDURE sp_ModificarCliente;
@@ -58,7 +57,6 @@ END;
 GO
 
 
-
 -- eliminar cliente
 IF OBJECT_ID('sp_EliminarCliente', 'P') IS NOT NULL
     DROP PROCEDURE sp_EliminarCliente;
@@ -85,25 +83,23 @@ END;
 GO
 
 
-
 -- pruebas y lote de ejecucion
 
+-- prueba de insercion
+EXEC sp_InsertarCliente 'Carlos', 'Benitez', 48999888, 'carlos.benitez@test.com', 31;
 
--- Prueba de Insercion
-EXEC sp_InsertarCliente 'Esteban', 'Quito', 48999888, 'esteban.quito@test.com', 31;
-
--- Verificar insercion
+-- verificar insercion
 SELECT TOP 1 * FROM CLIENTE ORDER BY id_cliente DESC;
 
--- Prueba de Modificacion (usando el ultimo cliente cargado)
+-- prueba de modificacion (usando el ultimo cliente cargado)
 DECLARE @id_prueba INT = (SELECT MAX(id_cliente) FROM CLIENTE);
-EXEC sp_ModificarCliente @id_prueba, 'Esteban Carlos', 'Quito', 48999888, 'esteban.modificado@test.com', 31;
+EXEC sp_ModificarCliente @id_prueba, 'Carlos Alberto', 'Benitez', 48999888, 'carlos.modificado@test.com', 31;
 
--- Verificar modificacion
+-- verificar modificacion
 SELECT * FROM CLIENTE WHERE id_cliente = (SELECT MAX(id_cliente) FROM CLIENTE);
 
--- 3. Prueba de Eliminacion (Baja Logica)
+-- prueba de eliminacion (baja logica)
 EXEC sp_EliminarCliente @id_prueba;
 
--- Verificar fecha de eliminacion
+-- verificar fecha de eliminacion
 SELECT * FROM CLIENTE WHERE id_cliente = (SELECT MAX(id_cliente) FROM CLIENTE);
