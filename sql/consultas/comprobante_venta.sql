@@ -1,4 +1,5 @@
-USE proyectoFerreteria;
+USE ProyectoFerreteria;
+GO
 
 --  COMPROBANTE / FACTURA DE VENTA
 
