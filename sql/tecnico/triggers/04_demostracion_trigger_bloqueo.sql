@@ -32,7 +32,10 @@ BEGIN TRY
             THROW;
 
         SET @delete_rechazado = 1;
-        PRINT 'Mensaje de rechazo: ' + ERROR_MESSAGE();
+
+        SELECT
+            ERROR_NUMBER() AS numero_error,
+            ERROR_MESSAGE() AS mensaje_error;
     END CATCH;
 
     PRINT 'El mismo cliente después del intento:';

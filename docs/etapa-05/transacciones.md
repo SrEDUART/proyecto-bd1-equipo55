@@ -17,51 +17,55 @@ Esta operación requiere interactuar con tres tablas de forma simultánea:
 ## 3. Pruebas Realizadas
 
 ### 3.1. Prueba 1: Transacción Exitosa
-En esta prueba se ejecuta el flujo completo dentro de un bloque `BEGIN TRANSACTION`.
-1. Se inserta un registro en `VENTA` (utilizando un cliente y usuario válidos).
-2. Se recupera el ID autogenerado con `SCOPE_IDENTITY()`.
-3. Se inserta el producto en `DETALLE_VENTA` asociado a ese ID.
-4. Se ejecuta un `UPDATE` sobre `INVENTARIO` para restar las unidades vendidas.
-5. Se confirma la operación completa con `COMMIT TRANSACTION`.
+El procedimiento `sp_RegistrarVentaTransaccion` realiza el flujo dentro de una transacción:
+1. Inserta la cabecera de la venta en `VENTA`.
+2. Inserta el producto, la cantidad y el precio en `DETALLE_VENTA`.
+3. Actualiza `INVENTARIO` para descontar las unidades vendidas.
+4. Si las operaciones terminan correctamente, ejecuta `COMMIT TRANSACTION`.
 
-**Resultado esperado:** Los tres registros se guardan de forma simultánea y el stock se descuenta correctamente. Si alguna de las tres operaciones fallara, el `CATCH` capturaría el error y se ejecutaría un `ROLLBACK`.
+La demostración consulta la venta y su detalle, y muestra el stock luego de la operación. También verifica que la venta y el detalle se hayan creado y que el stock se haya descontado.
+
+La demostración ejecuta este procedimiento dentro de una transacción externa de prueba. Luego de mostrar y verificar los resultados, revierte esa transacción externa para dejar la base de datos como estaba. Esta limpieza no significa que la operación del procedimiento haya fallado: el procedimiento completó su flujo y ejecutó `COMMIT`.
 
 ### 3.2. Prueba 2: Transacción Fallida (Error Intencional)
-Para demostrar la efectividad del `ROLLBACK`, se diseñó una prueba que fuerza un error de integridad referencial.
+Para demostrar la efectividad del `ROLLBACK`, la demostración realiza las siguientes operaciones:
 1. Se inicia la transacción (`BEGIN TRANSACTION`).
-2. Se inserta la cabecera en `VENTA`.
-3. **Error provocado:** se intenta insertar un producto en `DETALLE_VENTA` con un `id_producto = 9999` que no existe en la base de datos.
-4. El motor de SQL Server lanza un error de clave foránea (FK) y el flujo salta al bloque `BEGIN CATCH`.
-5. Se ejecuta `ROLLBACK TRANSACTION`.
+2. Se inserta una cabecera en `VENTA`.
+3. Se intenta insertar un detalle en `DETALLE_VENTA` con `precio_unitario_catalogo = 0`.
+4. La restricción `CHECK`, que exige un precio unitario mayor que cero, provoca el error y el flujo pasa al bloque `CATCH`.
+5. El bloque `CATCH` ejecuta `ROLLBACK TRANSACTION`.
 
-**Resultado esperado:** La tabla `VENTA` no debe tener ningún registro nuevo. El `INSERT` inicial se deshace automáticamente, demostrando que la base de datos mantuvo su integridad y no quedaron "ventas fantasma" sin productos asociados.
+Después, la demostración consulta la venta y el detalle para comprobar que no quedaron registros de esa operación y consulta `INVENTARIO` para verificar que el stock no cambió.
 
 ## 4. Implementación T-SQL
-A continuación, un fragmento representativo de la transacción fallida implementada:
+A continuación se muestra el fragmento de la demostración que provoca el error:
 
 ```sql
 BEGIN TRY
     BEGIN TRANSACTION;
 
-    -- 1. Insertar en VENTA
     INSERT INTO VENTA (tipo_factura, descuento, id_sucursal, id_cliente, id_usuario) 
-    VALUES ('A', 0.00, 1, 1, 1);
+    VALUES ('A', 0.00, @id_sucursal, @id_cliente, @id_usuario);
     
     DECLARE @id_venta_fallida INT = SCOPE_IDENTITY();
 
-    -- 2. Forzar Error (Producto inexistente)
+    -- El precio cero incumple la restricción CHECK.
     INSERT INTO DETALLE_VENTA (cantidad, precio_unitario_catalogo, id_producto, id_venta)
-    VALUES (1, 15000.00, 9999, @id_venta_fallida);
-
-    -- 3. Actualizar Stock
-    UPDATE INVENTARIO 
-    SET stock = stock - 1 
-    WHERE id_producto = 1 AND id_sucursal = 1;
+    VALUES (@cantidad, 0.00, @id_producto, @id_venta_fallida);
 
     COMMIT TRANSACTION;
 END TRY
 BEGIN CATCH
     -- Si hay error, se deshace todo
-    ROLLBACK TRANSACTION;
-    PRINT 'Error detectado intencionalmente. La venta NO se guardó.';
+    IF XACT_STATE() <> 0
+        ROLLBACK TRANSACTION;
+    IF ERROR_NUMBER() <> 547
+        THROW;
+
+    PRINT 'Error real capturado; la transacción fue revertida: ' + ERROR_MESSAGE();
 END CATCH;
+```
+
+## 5. Conclusión
+
+`COMMIT` confirma las operaciones cuando la transacción termina correctamente. Si ocurre un error, `ROLLBACK` revierte el conjunto completo de modificaciones. Así se evitan estados parciales y se mantiene la consistencia de los datos.
