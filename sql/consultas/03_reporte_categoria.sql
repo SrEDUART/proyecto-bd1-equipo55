@@ -1,4 +1,5 @@
-USE proyectoFerreteria;
+USE ProyectoFerreteria;
+GO
 
 
 DECLARE @fecha_desde DATE = '2026-01-01';

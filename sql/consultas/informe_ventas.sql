@@ -1,11 +1,11 @@
+USE ProyectoFerreteria;
+GO
+
 /*
     Las fechas pueden modificarse segun el periodo que se quiera analizar.
     Se utiliza un limite superior exclusivo para incluir todo el dia
     indicado en @fecha_hasta, incluso si VENTA.fecha_hora contiene hora.
 */
-
-USE ferreteria;
-GO
 
 DECLARE @fecha_desde DATE = '2026-02-01';
 DECLARE @fecha_hasta DATE =  GETDATE();;
