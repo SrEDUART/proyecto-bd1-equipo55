@@ -85,8 +85,11 @@ GO
 
 -- pruebas y lote de ejecucion
 
--- prueba de insercion
-EXEC sp_InsertarCliente 'Carlos', 'Benitez', 48999888, 'carlos.benitez@test.com', 31;
+-- prueba de insercion (solo inserta si no existe previamente el DNI)
+IF NOT EXISTS (SELECT 1 FROM CLIENTE WHERE dni = 48999888)
+BEGIN
+    EXEC sp_InsertarCliente 'Carlos', 'Benitez', 48999888, 'carlos.benitez@test.com', 31;
+END
 
 -- verificar insercion
 SELECT TOP 1 * FROM CLIENTE ORDER BY id_cliente DESC;
@@ -99,7 +102,8 @@ EXEC sp_ModificarCliente @id_prueba, 'Carlos Alberto', 'Benitez', 48999888, 'car
 SELECT * FROM CLIENTE WHERE id_cliente = (SELECT MAX(id_cliente) FROM CLIENTE);
 
 -- prueba de eliminacion (baja logica)
-EXEC sp_EliminarCliente @id_prueba;
+DECLARE @id_prueba_baja INT = (SELECT MAX(id_cliente) FROM CLIENTE);
+EXEC sp_EliminarCliente @id_prueba_baja;
 
 -- verificar fecha de eliminacion
 SELECT * FROM CLIENTE WHERE id_cliente = (SELECT MAX(id_cliente) FROM CLIENTE);
