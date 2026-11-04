@@ -48,6 +48,16 @@ El script selecciona una categoría existente, crea productos temporales con có
 
 Las consultas de evidencia se ejecutan dentro de la transacción y antes del `ROLLBACK`, que revierte los productos temporales y sus filas de auditoría. Las capturas de implementación, `UPDATE` y `DELETE` se describen en [`evidencias/README.md`](../../sql/tecnico/triggers/evidencias/README.md).
 
+## 6. Bloqueo de eliminación física de clientes
+
+La implementación está en [`03_implementacion_trigger_bloqueo.sql`](../../sql/tecnico/triggers/03_implementacion_trigger_bloqueo.sql). Se eligió `CLIENTE` porque la tabla tiene el campo `eliminado_en` y el sistema contempla la baja lógica para conservar sus datos.
+
+El trigger `TR_CLIENTE_BLOQUEAR_DELETE` es `INSTEAD OF DELETE`: se ejecuta en lugar del borrado solicitado. Emite un mensaje con `RAISERROR` y no elimina la fila.
+
+La demostración está en [`04_demostracion_trigger_bloqueo.sql`](../../sql/tecnico/triggers/04_demostracion_trigger_bloqueo.sql). Selecciona un cliente activo, muestra sus datos, intenta eliminarlo, captura el mensaje y vuelve a consultar el mismo cliente. La transacción se revierte al final para no dejar cambios permanentes.
+
+Las capturas correspondientes están descriptas en [`evidencias/README.md`](../../sql/tecnico/triggers/evidencias/README.md). La prueba debe mostrar el mensaje de rechazo y confirmar que el cliente sigue activo e intacto.
+
 ## Conclusión
 
-Los triggers conservan automáticamente los datos anteriores de los productos modificados o eliminados, junto con la fecha, la hora y el usuario SQL, sin dejar los productos temporales de la demostración en la base.
+Los triggers de auditoría conservan los valores previos de los productos y el trigger de bloqueo impide el borrado físico de clientes, preservando los registros y orientando a utilizar la baja lógica.
