@@ -1,7 +1,11 @@
 USE proyectoFerreteria;
 GO
 
--- insertar cliente
+
+-- ETAPA V: Implementacion de procedimientos almacenados
+
+
+-- 1. insertar cliente
 IF OBJECT_ID('sp_InsertarCliente', 'P') IS NOT NULL
     DROP PROCEDURE sp_InsertarCliente;
 GO
@@ -22,7 +26,7 @@ END;
 GO
 
 
--- modificar cliente
+-- 2. modificar cliente
 IF OBJECT_ID('sp_ModificarCliente', 'P') IS NOT NULL
     DROP PROCEDURE sp_ModificarCliente;
 GO
@@ -57,7 +61,7 @@ END;
 GO
 
 
--- eliminar cliente
+-- 3. eliminar cliente
 IF OBJECT_ID('sp_EliminarCliente', 'P') IS NOT NULL
     DROP PROCEDURE sp_EliminarCliente;
 GO
@@ -81,29 +85,3 @@ BEGIN
     END
 END;
 GO
-
-
--- pruebas y lote de ejecucion
-
--- prueba de insercion (solo inserta si no existe previamente el DNI)
-IF NOT EXISTS (SELECT 1 FROM CLIENTE WHERE dni = 48999888)
-BEGIN
-    EXEC sp_InsertarCliente 'Carlos', 'Benitez', 48999888, 'carlos.benitez@test.com', 31;
-END
-
--- verificar insercion
-SELECT TOP 1 * FROM CLIENTE ORDER BY id_cliente DESC;
-
--- prueba de modificacion (usando el ultimo cliente cargado)
-DECLARE @id_prueba INT = (SELECT MAX(id_cliente) FROM CLIENTE);
-EXEC sp_ModificarCliente @id_prueba, 'Carlos Alberto', 'Benitez', 48999888, 'carlos.modificado@test.com', 31;
-
--- verificar modificacion
-SELECT * FROM CLIENTE WHERE id_cliente = (SELECT MAX(id_cliente) FROM CLIENTE);
-
--- prueba de eliminacion (baja logica)
-DECLARE @id_prueba_baja INT = (SELECT MAX(id_cliente) FROM CLIENTE);
-EXEC sp_EliminarCliente @id_prueba_baja;
-
--- verificar fecha de eliminacion
-SELECT * FROM CLIENTE WHERE id_cliente = (SELECT MAX(id_cliente) FROM CLIENTE);
