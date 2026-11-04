@@ -1,4 +1,4 @@
-USE proyectoFerreteria;
+USE ProyectoFerreteria;
 GO
 
 SET XACT_ABORT ON;

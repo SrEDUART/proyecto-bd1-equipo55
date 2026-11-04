@@ -2,7 +2,7 @@
 
 ## 1. Definición y objetivo
 
-Un trigger es un objeto de SQL Server que ejecuta automáticamente una acción al ocurrir un evento de base de datos. En este caso, los triggers `AFTER UPDATE` y `AFTER DELETE` registran los valores anteriores de cada producto afectado.
+Un trigger es una acción que SQL Server ejecuta automáticamente ante un evento en una tabla. En este caso, `TR_PRODUCTO_AUD_UPDATE` y `TR_PRODUCTO_AUD_DELETE` guardan los valores anteriores de `PRODUCTO` cuando se modifica o elimina una fila.
 
 El objetivo de la auditoría es conservar una trazabilidad de los cambios y eliminaciones, incluyendo los datos previos, el tipo de operación, la fecha y hora y el usuario de base de datos que la realizó. Se audita `PRODUCTO` porque sus precios y demás datos de catálogo pueden cambiar, y es importante poder reconstruir su estado previo.
 
@@ -27,7 +27,7 @@ El script crea `AUDITORIA_PRODUCTO` solo si aún no existe. Su estructura conser
 - `TR_PRODUCTO_AUD_UPDATE` se ejecuta después de un `UPDATE`.
 - `TR_PRODUCTO_AUD_DELETE` se ejecuta después de un `DELETE`.
 
-SQL Server proporciona la tabla lógica `deleted` en ambos eventos. En un `UPDATE`, contiene los valores anteriores a la modificación; en un `DELETE`, contiene los valores de la fila eliminada. Los triggers insertan desde `deleted` mediante `INSERT ... SELECT`, sin asumir que una sentencia afecta una sola fila. Por eso, una operación sobre varias filas genera una fila de auditoría por cada producto afectado.
+SQL Server proporciona la tabla lógica `deleted` con los datos anteriores: en un `UPDATE`, contiene los valores previos al cambio y, en un `DELETE`, los de la fila eliminada. Los triggers los copian a la auditoría con `INSERT ... SELECT`. Así, también se registra cada fila cuando una sentencia afecta varios productos.
 
 El DDL define `precio_venta` como una columna calculada y persistida. La auditoría lee su valor anterior desde `deleted`, junto con `precio_costo` y `porcentaje_ganancia`.
 
@@ -46,4 +46,8 @@ El script selecciona una categoría existente, crea productos temporales con có
 1. **UPDATE:** muestra el producto inicial, modifica `precio_costo` y `porcentaje_ganancia`, muestra los valores nuevos y consulta la fila de auditoría. Esta debe indicar `UPDATE` y contener los valores iniciales, además de `fecha_hora` y `usuario_bd`.
 2. **DELETE:** muestra otro producto antes de eliminarlo, confirma con una consulta sin resultados que ya no existe en `PRODUCTO` y consulta la fila de auditoría. Esta debe indicar `DELETE` y conservar sus valores anteriores, `fecha_hora` y `usuario_bd`.
 
-Las consultas de evidencia se ejecutan dentro de la transacción y antes del `ROLLBACK`. De ese modo, los productos temporales y sus filas de auditoría se revierten al finalizar. No se incluyen capturas ni resultados ejecutados: deben observarse al correr el script en la base del proyecto.
+Las consultas de evidencia se ejecutan dentro de la transacción y antes del `ROLLBACK`, que revierte los productos temporales y sus filas de auditoría. Las capturas de implementación, `UPDATE` y `DELETE` se describen en [`evidencias/README.md`](../../sql/tecnico/triggers/evidencias/README.md).
+
+## Conclusión
+
+Los triggers conservan automáticamente los datos anteriores de los productos modificados o eliminados, junto con la fecha, la hora y el usuario SQL, sin dejar los productos temporales de la demostración en la base.
