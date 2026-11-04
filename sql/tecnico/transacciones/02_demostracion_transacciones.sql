@@ -1,6 +1,10 @@
 USE ProyectoFerreteria;
 GO
 
+IF OBJECT_ID('dbo.sp_RegistrarVentaTransaccion', 'P') IS NULL
+    THROW 54000, 'No existe dbo.sp_RegistrarVentaTransaccion. Ejecute primero 01_implementacion_transacciones.sql.', 1;
+GO
+
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
 
@@ -48,12 +52,16 @@ BEGIN TRY
     FROM dbo.VENTA WITH (UPDLOCK, HOLDLOCK);
 
     PRINT 'Estado inicial de producto e inventario:';
+    SELECT @stock_exitoso = I.stock
+    FROM dbo.INVENTARIO AS I
+    WHERE I.id_producto = @id_producto
+      AND I.id_sucursal = @id_sucursal;
+
     SELECT
         I.id_producto,
         P.nombre_producto,
         I.id_sucursal,
-        I.stock AS stock_inicial,
-        @stock_exitoso = I.stock
+        I.stock AS stock_inicial
     FROM dbo.INVENTARIO AS I
     INNER JOIN dbo.PRODUCTO AS P
         ON P.id_producto = I.id_producto

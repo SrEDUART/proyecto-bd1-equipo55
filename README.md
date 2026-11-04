@@ -1,177 +1,183 @@
-🧰 Proyecto BD1 — Equipo 55
+# Proyecto BD1 — Equipo 55
 
-Sistema de Gestión Comercial para Ferretería Multisucursal
+## Sistema de Gestión Comercial para Ferretería Multisucursal
 
-Proyecto integrador de la asignatura Bases de Datos I, correspondiente a la Licenciatura en Sistemas de Información.
+Proyecto integrador de **Bases de Datos I**, correspondiente a la **Licenciatura en Sistemas de Información**. El proyecto diseña e implementa una base de datos en Microsoft SQL Server para una ferretería multisucursal, incluyendo productos, categorías, inventario, sucursales, clientes, usuarios, ventas y pagos. La base de datos del proyecto se llama `ProyectoFerreteria`.
 
-El proyecto consiste en el diseño e implementación de una base de datos relacional destinada a administrar las operaciones de una ferretería con múltiples sucursales. Su finalidad es centralizar la información comercial, mantener la consistencia de los datos y facilitar el registro y seguimiento de las operaciones del negocio.
+<a id="tabla-de-contenidos"></a>
+## Tabla de contenidos
 
-La solución contempla la administración de productos, categorías, inventario, sucursales, clientes, usuarios, ventas y pagos, utilizando Microsoft SQL Server como sistema gestor de bases de datos.
+- [Sobre el proyecto](#sobre-el-proyecto)
+- [Etapa 1 — Análisis del dominio](#etapa-1)
+- [Etapa 2 — Modelado y normalización](#etapa-2)
+- [Etapa 3 — Implementación física](#etapa-3)
+- [Etapa 4 — Consultas y casos de uso](#etapa-4)
+- [Etapa 5 — Temas técnicos](#etapa-5)
+- [Ejecución del proyecto](#ejecución-del-proyecto)
+- [Estructura del repositorio](#estructura-del-repositorio)
+- [Integrantes](#integrantes)
+- [Información académica](#información-académica)
 
-⸻
+<a id="sobre-el-proyecto"></a>
+## Sobre el proyecto
 
-📑 Índice
+El repositorio reúne los documentos y scripts SQL elaborados en las distintas etapas: análisis del dominio, modelado, implementación física, consultas de negocio y temas técnicos de SQL Server. Las tablas y relaciones se crean en `ProyectoFerreteria`; los scripts de carga, consulta y demostración trabajan sobre esa base.
 
-* 1. Objetivos del proyecto
-* 2. Alcance y funcionalidades
-* 3. Diseño de la base de datos
-* 4. Reglas de negocio e integridad
-* 5. Organización del repositorio
-* 6. Instalación y ejecución
-* 7. Consultas e informes SQL
-* 8. Integrantes
-* 9. Información académica
+[⬆ Volver al índice](#tabla-de-contenidos)
 
-⸻
+<a id="etapa-1"></a>
+## Etapa 1 — Análisis del dominio
 
-🎯 1. Objetivos del proyecto
+Esta etapa describe el contexto de la ferretería multisucursal, delimita el sistema y reúne las reglas de negocio que guían su diseño.
 
-Objetivo general
+| Documento | Contenido |
+|---|---|
+| [descripcion-caso.md](docs/etapa-01/descripcion-caso.md) | Contexto y necesidades del negocio. |
+| [alcance.md](docs/etapa-01/alcance.md) | Áreas funcionales incluidas en el sistema. |
+| [reglas-negocio.md](docs/etapa-01/reglas-negocio.md) | Reglas que condicionan los datos y las operaciones. |
 
-Diseñar e implementar una base de datos relacional que permita gestionar de manera organizada y consistente las operaciones de una ferretería multisucursal, aplicando los conceptos de modelado, normalización, integridad referencial y lenguaje SQL estudiados en la asignatura.
+[⬆ Volver al índice](#tabla-de-contenidos)
 
-Objetivos específicos
+<a id="etapa-2"></a>
+## Etapa 2 — Modelado y normalización
 
-* Identificar las entidades, atributos, relaciones y reglas de negocio del sistema.
-* Diseñar los modelos conceptual, lógico y físico de la base de datos.
-* Reducir la redundancia mediante la normalización de las estructuras.
-* Implementar claves primarias, claves foráneas y restricciones de integridad.
-* Cargar datos de prueba que permitan validar las relaciones entre las tablas.
-* Desarrollar consultas SQL para obtener información útil sobre las operaciones comerciales.
-* Documentar las decisiones de diseño y los procedimientos de implementación.
-* Organizar los entregables correspondientes a las distintas etapas del proyecto.
+Esta etapa presenta los modelos de datos y el análisis de normalización que fundamentan la estructura relacional.
 
-🏪 2. Alcance y funcionalidades
+| Documento o recurso | Contenido |
+|---|---|
+| [der-modelo-conceptual.png](docs/etapa-02/der-modelo-conceptual.png) | Diagrama entidad-relación conceptual. |
+| [der-modelo-relacional.png](docs/etapa-02/der-modelo-relacional.png) | Diagrama del modelo relacional. |
+| [modelo-relacional.md](docs/etapa-02/modelo-relacional.md) | Tablas, atributos y relaciones del modelo. |
+| [normalizacion.md](docs/etapa-02/normalizacion.md) | Análisis de normalización. |
 
-La base de datos contempla los principales procesos de gestión de una ferretería, desde la organización del catálogo de productos hasta el registro de las ventas y sus correspondientes pagos.
+`decisiones-diseno.md` existe, pero está vacío y no se presenta como documentación terminada.
 
-Módulo	Descripción
-Productos y categorías	Organización del catálogo, clasificación de artículos y administración de precios.
-Inventario	Administración de existencias asociadas a los productos y las sucursales.
-Sucursales y ubicaciones	Registro de establecimientos, direcciones y datos geográficos.
-Clientes	Almacenamiento de la información de los clientes.
-Usuarios y perfiles	Organización de los usuarios y sus permisos según el perfil asignado.
-Ventas	Registro de operaciones comerciales, fechas, vendedores y montos.
-Detalle de venta	Identificación de los productos vendidos, las cantidades y los precios aplicados.
-Pagos	Registro de los medios de pago y los importes asociados a las ventas.
+[⬆ Volver al índice](#tabla-de-contenidos)
 
-La estructura busca mantener separada la información de cada entidad y relacionarla mediante identificadores, evitando duplicaciones innecesarias y facilitando las consultas.
+<a id="etapa-3"></a>
+## Etapa 3 — Implementación física
 
-🗃️ 3. Diseño de la base de datos
+Esta etapa traslada el modelo relacional a SQL Server y documenta restricciones, integridad y pruebas de validación.
 
-El diseño se desarrolla a partir del análisis de los requerimientos del negocio y se representa mediante distintos modelos que permiten pasar de la descripción conceptual a una implementación física en SQL Server.
+| Documento | Contenido |
+|---|---|
+| [implementacion.md](docs/etapa-03/implementacion.md) | Implementación física de la base de datos. |
+| [restricciones-integridad.md](docs/etapa-03/restricciones-integridad.md) | Restricciones de integridad definidas en el esquema. |
+| [pruebas-validacion.md](docs/etapa-03/pruebas-validacion.md) | Pruebas intencionales de validación del DML. |
 
-Modelado de datos
+| Script | Descripción |
+|---|---|
+| [01_creacion_tablas.sql](sql/ddl/01_creacion_tablas.sql) | Crea y selecciona `ProyectoFerreteria`, si aún no existe, y crea las tablas. |
+| [02_poblado_datos.sql](sql/dml/02_poblado_datos.sql) | Carga los datos del proyecto. |
 
-El proceso de diseño contempla:
+Orden de ejecución: primero `01_creacion_tablas.sql` y luego `02_poblado_datos.sql`.
 
-1. Modelo conceptual: identificación de las entidades y sus relaciones.
-2. Modelo relacional: definición de las tablas, atributos, claves y cardinalidades.
-3. Normalización: revisión de las dependencias entre atributos para reducir redundancias y anomalías.
-4. Modelo físico: implementación de las estructuras mediante sentencias SQL.
+[⬆ Volver al índice](#tabla-de-contenidos)
 
-Podés consultar los materiales disponibles en la carpeta Documentación del proyecto y, en particular, la documentación de la etapa de modelado.
+<a id="etapa-4"></a>
+## Etapa 4 — Consultas y casos de uso
 
-Relaciones principales
+Esta etapa documenta casos de uso y consultas para consultar comprobantes e informes y analizar ventas por período, categoría, producto y sucursal.
 
-Entre las relaciones relevantes del sistema se encuentran:
+| Caso / recurso | Documento | Script |
+|---|---|---|
+| Casos de uso | [casos-uso.md](docs/etapa-04/casos-uso.md) | — |
+| Comprobante de venta | [comprobante-venta.md](docs/etapa-04/comprobante-venta.md) | [comprobante_venta.sql](sql/consultas/comprobante_venta.sql) |
+| Informe de ventas | [informe-ventas.md](docs/etapa-04/informe-ventas.md) | [informe_ventas.sql](sql/consultas/informe_ventas.sql) |
+| Consulta avanzada | [consulta-avanzada.md](docs/etapa-04/consulta-avanzada.md) | [consulta_avanzada.sql](sql/consultas/consulta_avanzada.sql) |
+| Reporte por categoría | — | [03_reporte_categoria.sql](sql/consultas/03_reporte_categoria.sql) |
 
-* Producto y categoría: permite clasificar los artículos del catálogo.
-* Producto y sucursal: permite organizar las existencias por establecimiento.
-* Venta y usuario: vincula cada operación con el usuario que la registra.
-* Venta y detalle de venta: permite representar los productos y las cantidades incluidos en cada operación.
-* Venta y pago: permite asociar los pagos correspondientes a una venta.
-* Cliente y venta: permite relacionar las operaciones con sus respectivos clientes cuando corresponde.
+[⬆ Volver al índice](#tabla-de-contenidos)
 
-Estas relaciones se implementan mediante claves primarias y foráneas, respetando las reglas definidas para cada entidad.
+<a id="etapa-5"></a>
+## Etapa 5 — Temas técnicos
 
-🔐 4. Reglas de negocio e integridad
+Esta etapa reúne mecanismos de SQL Server aplicados al sistema: procedimientos, funciones, transacciones, triggers y seguridad.
 
-La implementación contempla mecanismos para proteger la consistencia de la información almacenada.
+| Tema | Documento | Implementación | Demostración | Evidencias |
+|---|---|---|---|---|
+| Procedimientos | [procedimientos-funciones.md](docs/etapa-05/procedimientos-funciones.md) | [01_implementacion_procedimientos.sql](sql/tecnico/procedimientos/01_implementacion_procedimientos.sql) | [02_demostracion_procedimientos.sql](sql/tecnico/procedimientos/02_demostracion_procedimientos.sql) | [evidencias/](sql/tecnico/procedimientos/evidencias/) |
+| Funciones | [procedimientos-funciones.md](docs/etapa-05/procedimientos-funciones.md) | [01_implementacion_funciones.sql](sql/tecnico/funciones/01_implementacion_funciones.sql) | [02_demostracion_funciones.sql](sql/tecnico/funciones/02_demostracion_funciones.sql) | [evidencias/](sql/tecnico/funciones/evidencias/) |
+| Transacciones | [transacciones.md](docs/etapa-05/transacciones.md) | [01_implementacion_transacciones.sql](sql/tecnico/transacciones/01_implementacion_transacciones.sql) | [02_demostracion_transacciones.sql](sql/tecnico/transacciones/02_demostracion_transacciones.sql) | No hay carpeta de evidencias. |
+| Triggers | [triggers-auditoria.md](docs/etapa-05/triggers-auditoria.md) | [01_implementacion_triggers_auditoria.sql](sql/tecnico/triggers/01_implementacion_triggers_auditoria.sql) · [03_implementacion_trigger_bloqueo.sql](sql/tecnico/triggers/03_implementacion_trigger_bloqueo.sql) | [02_demostracion_triggers_auditoria.sql](sql/tecnico/triggers/02_demostracion_triggers_auditoria.sql) · [04_demostracion_trigger_bloqueo.sql](sql/tecnico/triggers/04_demostracion_trigger_bloqueo.sql) | [evidencias/](sql/tecnico/triggers/evidencias/) |
+| Seguridad | No hay documento en `docs/etapa-05/`. | [01_implementacion_seguridad.sql](sql/tecnico/seguridad/01_implementacion_seguridad.sql) | [02_demostracion_seguridad.sql](sql/tecnico/seguridad/02_demostracion_seguridad.sql) | [evidencias/](sql/tecnico/seguridad/evidencias/) |
 
-Entre los aspectos considerados se encuentran:
+El módulo de triggers incluye auditoría de `UPDATE` y `DELETE` sobre `PRODUCTO`, y el bloqueo del borrado físico de `CLIENTE`.
 
-* Integridad de entidad: cada registro debe poder identificarse mediante su clave primaria.
-* Integridad referencial: las claves foráneas deben mantener relaciones válidas entre las tablas.
-* Validación de valores: las restricciones permiten limitar los valores admitidos en determinados atributos.
-* Consistencia comercial: los importes de las ventas, los detalles y los pagos deben corresponder con las operaciones registradas.
-* Coherencia de usuarios: las operaciones deben respetar las reglas definidas para los perfiles habilitados.
-* Calidad de los datos: los datos de prueba deben respetar las relaciones y restricciones de la base de datos.
+No existe actualmente un módulo `sql/tecnico/indices/` ni documentación de índices en Etapa V; no se incluyen enlaces a esos recursos.
 
-Las reglas específicas y las decisiones adoptadas durante el diseño se documentan en los materiales correspondientes de la carpeta docs.
+[⬆ Volver al índice](#tabla-de-contenidos)
 
-📂 5. Organización del repositorio
+<a id="ejecución-del-proyecto"></a>
+## Ejecución del proyecto
 
-El repositorio se divide en dos áreas principales: documentación y scripts SQL. Cada etapa reúne los entregables correspondientes al desarrollo del proyecto.
+**Requisitos:** Microsoft SQL Server y SQL Server Management Studio (SSMS).
 
-Recurso	Contenido
-📁 docs/	Documentación, modelos, análisis y decisiones de diseño.
-📁 docs/etapa-01/	Análisis del problema, requerimientos y reglas de negocio.
-📁 docs/etapa-02/	Modelado conceptual y relacional, normalización y decisiones de diseño.
-📁 docs/etapa-03/	Documentación y entregables correspondientes a la tercera etapa.
-📁 docs/etapa-04/	Documentación y entregables correspondientes a la cuarta etapa.
-📁 sql/	Scripts para la creación, carga y consulta de la base de datos.
-📄 README.md	Presentación general y guía de navegación del proyecto.
+1. Ejecutar [sql/ddl/01_creacion_tablas.sql](sql/ddl/01_creacion_tablas.sql), que crea y selecciona `ProyectoFerreteria`.
+2. Ejecutar [sql/dml/02_poblado_datos.sql](sql/dml/02_poblado_datos.sql).
+3. Ejecutar los scripts de [sql/consultas/](sql/consultas/) según la consulta requerida.
+4. Para cada tema técnico, ejecutar primero el script de implementación y luego su demostración.
 
-Scripts SQL principales
+Algunos scripts de prueba del DML provocan errores intencionales para comprobar restricciones.
 
-* Creación de tablas — DDL: define la estructura de la base de datos, sus tablas y las restricciones correspondientes.
-* Poblado de datos — DML: contiene los datos iniciales utilizados para probar las estructuras y relaciones.
+[⬆ Volver al índice](#tabla-de-contenidos)
 
-La carpeta SQL reúne los scripts disponibles para implementar y trabajar con la base de datos.
+<a id="estructura-del-repositorio"></a>
+## Estructura del repositorio
 
-⚙️ 6. Instalación y ejecución
+```text
+docs/
+├── etapa-01/
+├── etapa-02/
+│   └── decisiones-diseno.md (vacío)
+├── etapa-03/
+├── etapa-04/
+└── etapa-05/
 
-Requisitos
+sql/
+├── ddl/
+├── dml/
+├── consultas/
+└── tecnico/
+    ├── procedimientos/
+    ├── funciones/
+    ├── transacciones/
+    ├── triggers/
+    └── seguridad/
 
-* Microsoft SQL Server.
-* SQL Server Management Studio (SSMS) u otra herramienta compatible.
-* Acceso a los archivos SQL del repositorio.
+README.md
+```
 
-Procedimiento
+| Carpeta | Contenido |
+|---|---|
+| [docs/](docs/) | Documentación de las etapas. |
+| [sql/ddl/](sql/ddl/) | Creación de la base y las tablas. |
+| [sql/dml/](sql/dml/) | Carga de datos. |
+| [sql/consultas/](sql/consultas/) | Consultas e informes SQL. |
+| [sql/tecnico/](sql/tecnico/) | Implementaciones, demostraciones y evidencias de temas técnicos. |
 
-1. Clonar el repositorio o descargarlo desde GitHub.
-2. Abrir SQL Server Management Studio y conectarse a la instancia correspondiente.
-3. Revisar el script de creación de tablas.
-4. Ejecutar el script para crear las estructuras y relaciones.
-5. Revisar y ejecutar el script de poblado de datos.
-6. Verificar que las tablas contengan los datos esperados y que las relaciones se hayan establecido correctamente.
+[⬆ Volver al índice](#tabla-de-contenidos)
 
-Importante: antes de ejecutar los scripts, revisá si contienen instrucciones para crear, eliminar o modificar bases de datos. Las pruebas de restricciones también pueden provocar errores intencionales cuando buscan comprobar que una validación funciona correctamente.
+<a id="integrantes"></a>
+## Integrantes
 
-📊 7. Consultas e informes SQL
+- Ignacio Valentín Pereira
+- Matías Daniel Zacarías
+- Josué Eduardo Aponte
+- Carlos Exequiel Melgarejo Jaras
+- Josías Francisco Correa Cuevas
 
-Las consultas SQL permiten recuperar y analizar la información almacenada, transformando los datos operativos en resultados útiles para comprender el funcionamiento del negocio.
+[⬆ Volver al índice](#tabla-de-contenidos)
 
-Entre los análisis que pueden desarrollarse a partir de la estructura se encuentran:
+<a id="información-académica"></a>
+## Información académica
 
-* Cantidad de ventas realizadas durante un período.
-* Unidades vendidas por producto o categoría.
-* Importes de ventas y montos registrados en los detalles.
-* Análisis de pagos asociados a las operaciones comerciales.
-* Comparaciones de ventas entre períodos o sucursales.
+| Campo | Información |
+|---|---|
+| Carrera | Licenciatura en Sistemas de Información |
+| Asignatura | Bases de Datos I |
+| Trabajo | Proyecto integrador |
+| Equipo | 55 |
+| Año | 2026 |
 
-Los informes se construyen utilizando consultas SQL y las relaciones entre las tablas involucradas. Para mantener la consistencia de los resultados, es importante considerar las claves de relación, evitar duplicaciones producidas por los JOIN y aplicar correctamente las funciones de agregación.
-
-Los archivos de cada informe y su documentación deben consultarse en la carpeta SQL y en la sección de documentación correspondiente.
-
-👥 8. Integrantes
-
-* Ignacio Valentín Pereira
-* Matías Daniel Zacarías
-* Josué Eduardo Aponte
-* Carlos Exequiel Melgarejo Jaras
-* Josías Francisco Correa Cuevas
-
-🎓 9. Información académica
-
-Campo	Información
-Carrera	Licenciatura en Sistemas de Información
-Asignatura	Bases de Datos I
-Trabajo	Proyecto integrador
-Equipo	55
-Año	2026
-
-⸻
-
-Repositorio: SrEDUART/proyecto-bd1-equipo55
+[⬆ Volver al índice](#tabla-de-contenidos)
