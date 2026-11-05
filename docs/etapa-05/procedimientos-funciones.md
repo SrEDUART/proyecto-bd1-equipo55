@@ -22,8 +22,12 @@ Recibe el `id_cliente` y realiza una **baja lógica** actualizando el campo `eli
 
 La demostración está en
 [`02_demostracion_procedimientos.sql`](../../sql/tecnico/procedimientos/02_demostracion_procedimientos.sql).
-Mantiene las pruebas de inserción, modificación y baja lógica mediante
-los procedimientos almacenados.
+Las pruebas CRUD generan un DNI y un correo únicos, insertan un cliente
+temporal y conservan el `id_cliente` devuelto por la consulta de
+verificación. Ese mismo identificador se usa para la modificación y la
+baja lógica. Las tres operaciones se ejecutan dentro de una transacción
+que termina con `ROLLBACK`, por lo que no modifican clientes reales ni
+dejan datos temporales.
 
 También compara dos formas de insertar un lote de cinco clientes:
 
@@ -41,10 +45,11 @@ por lo que una ejecución aislada no demuestra que una alternativa sea
 siempre más rápida. Además de su rendimiento, el procedimiento permite
 centralizar y reutilizar la lógica de inserción.
 
-**Evidencia de la comparación:** la captura nueva debe mostrar ambas
-mediciones en la pestaña **Mensajes**, los conteos de cinco filas para
-cada alternativa y cero filas restantes después del `ROLLBACK`. Los
-detalles están en
+**Evidencia final de la comparación:** la captura existente
+[`03_comparacion_inserciones.png`](../../sql/tecnico/procedimientos/evidencias/03_comparacion_inserciones.png)
+muestra ambas mediciones en la pestaña **Mensajes**, los conteos de cinco
+filas para cada alternativa y cero filas restantes después del
+`ROLLBACK`. Los detalles están en
 [`README de evidencias`](../../sql/tecnico/procedimientos/evidencias/README.md).
 
 ## 4. Funciones almacenadas

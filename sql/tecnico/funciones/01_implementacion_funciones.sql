@@ -12,8 +12,8 @@ GO
       3. dbo.fn_StockDisponible
 
   Requisito previo:
-    La base de datos ferreteria debe existir y contener las tablas utilizadas
-    por las funciones.
+    La base de datos ProyectoFerreteria debe existir y contener las tablas
+    utilizadas por las funciones.
 
   Ejecutar este archivo antes de demostracion_funciones.sql.
   Este script contiene solamente la definicion de las funciones; las pruebas

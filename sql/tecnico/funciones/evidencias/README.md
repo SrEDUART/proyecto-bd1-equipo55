@@ -5,7 +5,7 @@
 Demostración de ejecución del script `implementacion_funciones.sql` en SQL Server Management Studio (SSMS):
 
 - Muestra la creación exitosa de las tres funciones almacenadas: `fn_ImporteDetalleVenta`, `fn_TotalGastadoCliente` y `fn_StockDisponible`.
-- Se visualizan las tres funciones dentro de la sección **Programación → Funciones → Funciones escalares** de la base de datos `ferreteria`.
+- Se visualizan las tres funciones dentro de la sección **Programación → Funciones → Funciones escalares** de la base de datos `ProyectoFerreteria`.
 - La ejecución finaliza correctamente, sin errores.
 
 ## 2. Pruebas individuales de funcionamiento
@@ -64,9 +64,9 @@ Se utilizaron las instrucciones `SET STATISTICS TIME ON` y `SET STATISTICS IO ON
 
 Demostración de ejecución de las verificaciones incluidas en `demostracion_funciones.sql`.
 
-### 4.1. Capturas: `11_verificacion_coincidencia_resultados.png` y `12_verificacion_ejecucion_correcta.png`
+### 4.1. Verificación: `11_verificacion_coincidencia_resultados.png`
 
-Se realizaron tres verificaciones para comprobar que los cálculos directos y los realizados mediante las funciones almacenadas producen los mismos resultados:
+La captura muestra las tres verificaciones que comparan los cálculos directos con los resultados de las funciones almacenadas:
 
 - **Verificación 1 (Importe de detalles):** comparación de los importes calculados directamente con los devueltos por `fn_ImporteDetalleVenta`.
 - **Verificación 2 (Total por cliente):** comparación de los totales acumulados mediante consultas directas con los obtenidos a través de `fn_TotalGastadoCliente`.
@@ -74,4 +74,9 @@ Se realizaron tres verificaciones para comprobar que los cálculos directos y lo
 
 Las tres consultas de verificación no devolvieron filas, lo que confirma que no se encontraron diferencias entre los resultados.
 
-Finalmente, SQL Server informó que las consultas se ejecutaron correctamente.
+### 4.2. Evidencia complementaria: `12_verificacion_ejecucion_correcta.png`
+
+Esta captura complementa la evidencia de que la ejecución finalizó correctamente.
+Como muestra un contexto antiguo con el nombre `ferreteria`, no se presenta como
+prueba del nombre actual de la base de datos. Los scripts actuales y las restantes
+evidencias del módulo corresponden a `ProyectoFerreteria`.

@@ -1,32 +1,39 @@
 # Evidencias de índices
 
-Las capturas actuales, `implementacion_indice.png` y `demostracion_indice.png`, corresponden a una versión anterior del módulo que solo creaba el índice no agrupado y ejecutaba una vez la consulta. Se conservan sin cambios, pero no demuestran los tres escenarios de la demostración actual.
+Las siguientes siete capturas son las evidencias finales de la demostración actual. Las imágenes históricas `implementacion_indice.png` y `demostracion_indice.png` se conservan, pero corresponden a la prueba anterior.
 
-Tomar las siguientes capturas nuevas al ejecutar los scripts en SQL Server Management Studio. Para las tres consultas, activar el plan de ejecución real con `Ctrl+M` y mostrar también las estadísticas de `TIME` e `IO` en la pestaña **Mensajes**.
+## Carga de datos
 
-## Capturas necesarias
+### `01_carga_millon_registros.png`
 
-### `01_implementacion_datos.png`
+Muestra el conteo de 1.000.000 de filas en `VENTA_HISTORICA` y que la tabla comienza sin índices definidos.
 
-Debe mostrar que `01_implementacion_indices.sql` terminó correctamente y el resultado de esta consulta, que confirma la cantidad de filas cargadas:
+## Escenario 1: sin índice
 
-```sql
-SELECT COUNT(*) AS cantidad_registros
-FROM dbo.VENTA_HISTORICA;
-```
+### `02_sin_indice_mensajes.png`
 
-El resultado debe corresponder a 1.000.000 de filas. La tabla queda sin índices para iniciar la prueba.
+Muestra la consulta por rango de fechas y las métricas de tiempo y lecturas del escenario sin índice.
 
-### `02_consulta_sin_indice.png`
+### `02_sin_indice_plan.png`
 
-Debe mostrar la consulta por rango de fechas, el plan real elegido por SQL Server y las estadísticas de tiempo y lecturas para el escenario sin índice.
+Muestra el plan de ejecución real de la consulta en el escenario sin índice.
 
-### `03_consulta_indice_clustered.png`
+## Escenario 2: índice CLUSTERED
 
-Debe mostrar la creación de `CX_VentaHistorica_Fecha` y la ejecución de la misma consulta, con su plan real y las estadísticas de tiempo y lecturas.
+### `03_indice_clustered_mensajes.png`
 
-### `04_consulta_indice_cobertura.png`
+Muestra las métricas de tiempo y lecturas al ejecutar la consulta con el índice agrupado sobre `fecha_venta`.
 
-Debe mostrar el `DROP INDEX` del clustered, la creación de `IX_VentaHistorica_Fecha_Cobertura` con las columnas incluidas, y la ejecución de la misma consulta con su plan real y las estadísticas de tiempo y lecturas.
+### `03_indice_clustered_plan.png`
 
-Las capturas deben reflejar los resultados observados; no agregar métricas ni conclusiones que no aparezcan en SSMS.
+Muestra el plan de ejecución real correspondiente al escenario con índice `CLUSTERED`.
+
+## Escenario 3: índice de cobertura
+
+### `04_indice_cobertura_mensajes.png`
+
+Muestra las métricas de tiempo y lecturas al ejecutar la consulta con el índice `NONCLUSTERED` de cobertura.
+
+### `04_indice_cobertura_plan.png`
+
+Muestra el plan de ejecución real correspondiente al escenario con índice de cobertura.

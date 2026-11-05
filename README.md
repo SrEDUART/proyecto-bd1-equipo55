@@ -82,9 +82,8 @@ Esta etapa documenta casos de uso y consultas para consultar comprobantes e info
 |---|---|---|
 | Casos de uso | [casos-uso.md](docs/etapa-04/casos-uso.md) | — |
 | Comprobante de venta | [comprobante-venta.md](docs/etapa-04/comprobante-venta.md) | [comprobante_venta.sql](sql/consultas/comprobante_venta.sql) |
-| Informe de ventas | [informe-ventas.md](docs/etapa-04/informe-ventas.md) | [informe_ventas.sql](sql/consultas/informe_ventas.sql) |
+| Informe de ventas por vendedor y categoría | [informe-ventas.md](docs/etapa-04/informe-ventas.md) | [informe_ventas.sql](sql/consultas/informe_ventas.sql) |
 | Consulta avanzada | [consulta-avanzada.md](docs/etapa-04/consulta-avanzada.md) | [consulta_avanzada.sql](sql/consultas/consulta_avanzada.sql) |
-| Reporte por categoría | — | [03_reporte_categoria.sql](sql/consultas/03_reporte_categoria.sql) |
 
 [⬆ Volver al índice](#tabla-de-contenidos)
 

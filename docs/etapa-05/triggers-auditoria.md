@@ -16,7 +16,7 @@ El objetivo de la auditoría es conservar una trazabilidad de los cambios y elim
 
 ## 3. Implementación en SQL Server Express
 
-La implementación está en [`01_implementacion_triggers_auditoria.sql`](../../sql/tecnico/triggers/01_implementacion_triggers_auditoria.sql). Debe ejecutarse en SQL Server Express después de crear la base `proyectoFerreteria` y las tablas del proyecto.
+La implementación está en [`01_implementacion_triggers_auditoria.sql`](../../sql/tecnico/triggers/01_implementacion_triggers_auditoria.sql). Debe ejecutarse en SQL Server Express después de crear la base `ProyectoFerreteria` y las tablas del proyecto.
 
 El script crea `AUDITORIA_PRODUCTO` solo si aún no existe. Su estructura conserva el identificador del producto, el tipo de operación, los valores anteriores de las columnas de `PRODUCTO`, `fecha_hora` y `usuario_bd`. Una restricción `CHECK` limita `tipo_operacion` a `UPDATE` o `DELETE`. La fecha se registra con `SYSDATETIME()` y el usuario SQL con `SUSER_SNAME()`.
 

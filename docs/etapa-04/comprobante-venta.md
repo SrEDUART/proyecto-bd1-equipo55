@@ -18,7 +18,7 @@ Además del subtotal de cada ítem, calcula el subtotal general de la venta y el
 ## 3. Código SQL
 
 ```sql
-USE proyectoFerreteria;
+USE ProyectoFerreteria;
 
 DECLARE @id_venta_busqueda INT = 1;
 
