@@ -77,7 +77,7 @@ resultado de ejecutar la función para distintos detalles de venta, junto
 con los datos utilizados para realizar el cálculo.
 
 ![Evidencia de
-fn_ImporteDetalleVenta](evidencias/fn_ImporteDetalleVenta.png)
+fn_ImporteDetalleVenta](../../sql/tecnico/funciones/evidencias/02_fn_importe_detalle.png)
 
 ### 4.2. `fn_TotalGastadoCliente`
 
@@ -95,7 +95,7 @@ operaciones asociado a cada persona.
 consultados y el total gastado calculado por la función para cada uno.
 
 ![Evidencia de
-fn_TotalGastadoCliente](evidencias/fn_TotalGastadoCliente.png)
+fn_TotalGastadoCliente](../../sql/tecnico/funciones/evidencias/03_fn_total_gastado_cliente.png)
 
 ### 4.3. `fn_StockDisponible`
 
@@ -115,7 +115,7 @@ con los devueltos por la función (`stock_funcion`). La coincidencia de
 ambos valores permite comprobar que la función recupera correctamente el
 stock registrado para cada producto y sucursal.
 
-![Evidencia de fn_StockDisponible](evidencias/fn_StockDisponible.png)
+![Evidencia de fn_StockDisponible](../../sql/tecnico/funciones/evidencias/04_fn_stock_disponible.png)
 
 ### 4.4. Verificación general
 
@@ -125,4 +125,4 @@ y el mensaje de ejecución correcta.
 
 Estas pruebas permiten verificar que las funciones reciben los
 parámetros correspondientes y devuelven los valores esperados para los
-datos cargados en la base de datos `ferreteria`.
+datos cargados en la base de datos `ProyectoFerreteria`.
