@@ -49,8 +49,7 @@ Esta etapa presenta los modelos de datos y el análisis de normalización que fu
 | [der-modelo-relacional.png](docs/etapa-02/der-modelo-relacional.png) | Diagrama del modelo relacional. |
 | [modelo-relacional.md](docs/etapa-02/modelo-relacional.md) | Tablas, atributos y relaciones del modelo. |
 | [normalizacion.md](docs/etapa-02/normalizacion.md) | Análisis de normalización. |
-
-`decisiones-diseno.md` existe, pero está vacío y no se presenta como documentación terminada.
+| [decisiones-diseno.md](docs/etapa-02/decisiones-diseno.md) | Decisiones de diseño documentadas a partir del modelo. |
 
 [⬆ Volver al índice](#tabla-de-contenidos)
 
@@ -92,19 +91,18 @@ Esta etapa documenta casos de uso y consultas para consultar comprobantes e info
 <a id="etapa-5"></a>
 ## Etapa 5 — Temas técnicos
 
-Esta etapa reúne mecanismos de SQL Server aplicados al sistema: procedimientos, funciones, transacciones, triggers y seguridad.
+Esta etapa reúne mecanismos de SQL Server aplicados al sistema: procedimientos, funciones, transacciones, triggers, seguridad e índices.
 
 | Tema | Documento | Implementación | Demostración | Evidencias |
 |---|---|---|---|---|
 | Procedimientos | [procedimientos-funciones.md](docs/etapa-05/procedimientos-funciones.md) | [01_implementacion_procedimientos.sql](sql/tecnico/procedimientos/01_implementacion_procedimientos.sql) | [02_demostracion_procedimientos.sql](sql/tecnico/procedimientos/02_demostracion_procedimientos.sql) | [evidencias/](sql/tecnico/procedimientos/evidencias/) |
 | Funciones | [procedimientos-funciones.md](docs/etapa-05/procedimientos-funciones.md) | [01_implementacion_funciones.sql](sql/tecnico/funciones/01_implementacion_funciones.sql) | [02_demostracion_funciones.sql](sql/tecnico/funciones/02_demostracion_funciones.sql) | [evidencias/](sql/tecnico/funciones/evidencias/) |
-| Transacciones | [transacciones.md](docs/etapa-05/transacciones.md) | [01_implementacion_transacciones.sql](sql/tecnico/transacciones/01_implementacion_transacciones.sql) | [02_demostracion_transacciones.sql](sql/tecnico/transacciones/02_demostracion_transacciones.sql) | No hay carpeta de evidencias. |
+| Transacciones | [transacciones.md](docs/etapa-05/transacciones.md) | [01_implementacion_transacciones.sql](sql/tecnico/transacciones/01_implementacion_transacciones.sql) | [02_demostracion_transacciones.sql](sql/tecnico/transacciones/02_demostracion_transacciones.sql) | [README](sql/tecnico/transacciones/evidencias/README.md) · [Caso exitoso](sql/tecnico/transacciones/evidencias/01_transaccion_exitosa.png) · [Rollback](sql/tecnico/transacciones/evidencias/02_transaccion_rollback.png) |
 | Triggers | [triggers-auditoria.md](docs/etapa-05/triggers-auditoria.md) | [01_implementacion_triggers_auditoria.sql](sql/tecnico/triggers/01_implementacion_triggers_auditoria.sql) · [03_implementacion_trigger_bloqueo.sql](sql/tecnico/triggers/03_implementacion_trigger_bloqueo.sql) | [02_demostracion_triggers_auditoria.sql](sql/tecnico/triggers/02_demostracion_triggers_auditoria.sql) · [04_demostracion_trigger_bloqueo.sql](sql/tecnico/triggers/04_demostracion_trigger_bloqueo.sql) | [evidencias/](sql/tecnico/triggers/evidencias/) |
-| Seguridad | No hay documento en `docs/etapa-05/`. | [01_implementacion_seguridad.sql](sql/tecnico/seguridad/01_implementacion_seguridad.sql) | [02_demostracion_seguridad.sql](sql/tecnico/seguridad/02_demostracion_seguridad.sql) | [evidencias/](sql/tecnico/seguridad/evidencias/) |
+| Seguridad | [seguridad.md](docs/etapa-05/seguridad.md) | [01_implementacion_seguridad.sql](sql/tecnico/seguridad/01_implementacion_seguridad.sql) | [02_demostracion_seguridad.sql](sql/tecnico/seguridad/02_demostracion_seguridad.sql) | [evidencias/](sql/tecnico/seguridad/evidencias/) |
+| Índices | [indices-optimizacion.md](docs/etapa-05/indices-optimizacion.md) | [01_implementacion_indices.sql](sql/tecnico/indices/01_implementacion_indices.sql) | [02_demostracion_indices.sql](sql/tecnico/indices/02_demostracion_indices.sql) | [evidencias/](sql/tecnico/indices/evidencias/) |
 
 El módulo de triggers incluye auditoría de `UPDATE` y `DELETE` sobre `PRODUCTO`, y el bloqueo del borrado físico de `CLIENTE`.
-
-No existe actualmente un módulo `sql/tecnico/indices/` ni documentación de índices en Etapa V; no se incluyen enlaces a esos recursos.
 
 [⬆ Volver al índice](#tabla-de-contenidos)
 
@@ -129,7 +127,6 @@ Algunos scripts de prueba del DML provocan errores intencionales para comprobar 
 docs/
 ├── etapa-01/
 ├── etapa-02/
-│   └── decisiones-diseno.md (vacío)
 ├── etapa-03/
 ├── etapa-04/
 └── etapa-05/
@@ -143,7 +140,8 @@ sql/
     ├── funciones/
     ├── transacciones/
     ├── triggers/
-    └── seguridad/
+    ├── seguridad/
+    └── indices/
 
 README.md
 ```

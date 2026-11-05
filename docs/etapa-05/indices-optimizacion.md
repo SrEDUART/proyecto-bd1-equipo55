@@ -1,159 +1,57 @@
-# Índices sobre `VENTA_HISTORICA`
+# Índices y optimización
 
 ## 1. Definición y objetivo
 
-Un índice es una estructura que SQL Server utiliza para localizar
-registros de una tabla de manera más eficiente. En esta implementación
-se crea un índice no agrupado (`NONCLUSTERED`) sobre la columna
-`fecha_venta` de la tabla `VENTA_HISTORICA`.
+Un índice es una estructura que SQL Server puede utilizar para localizar filas. Esta demostración compara una consulta por rango de fechas sobre `VENTA_HISTORICA`, una tabla de prueba con 1.000.000 de registros, en tres escenarios: sin índice, con índice `CLUSTERED` sobre `fecha_venta` y con un índice `NONCLUSTERED` de cobertura sobre esa fecha.
 
-El objetivo es optimizar las consultas que buscan ventas históricas
-dentro de un rango de fechas. Para realizar la prueba, se utiliza una
-tabla con 1.000.000 de registros generados automáticamente, lo que
-permite trabajar con un volumen significativo de datos.
-
-La implementación se centra en demostrar el funcionamiento de un índice
-sobre una columna utilizada como criterio de búsqueda. La tabla
-`VENTA_HISTORICA` es una tabla de prueba creada para esta demostración y
-no reemplaza ni modifica la tabla operativa `VENTA` del proyecto.
+La tabla es solo para la prueba y no reemplaza ni modifica la tabla operativa `VENTA`.
 
 ## 2. Ventajas y aplicaciones
 
--   **Búsqueda por fechas:** permite localizar de manera más eficiente
-    las ventas correspondientes a un período determinado.
--   **Índice no agrupado:** crea una estructura de búsqueda secundaria
-    sin establecer el orden físico de los registros de la tabla.
--   **Columnas incluidas:** almacena `total` y `estado` como información
-    adicional del índice para facilitar consultas que utilizan esos
-    datos.
--   **Evaluación del rendimiento:** permite observar las lecturas de E/S
-    y los tiempos de ejecución de una consulta.
--   **Prueba con volumen de datos:** utiliza un millón de registros para
-    analizar el comportamiento de la consulta sobre una tabla de tamaño
-    considerable.
+- Los índices pueden ayudar a localizar filas según las columnas usadas en los filtros.
+- Un índice `CLUSTERED` organiza las filas de la tabla según su clave.
+- Un índice `NONCLUSTERED` crea una estructura de búsqueda separada. Las columnas incluidas pueden cubrir los datos que devuelve una consulta.
+- `SET STATISTICS TIME` y `SET STATISTICS IO` permiten observar tiempos y lecturas para comparar ejecuciones.
+- El plan de ejecución permite revisar qué operaciones eligió SQL Server; el optimizador puede seleccionar planes distintos según los datos y las estadísticas.
 
 ## 3. Implementación en SQL Server Express
 
-La implementación está en
-[`01_implementacion_indices.sql`](../../sql/tecnico/indices/01_implementacion_indices.sql).
-Debe ejecutarse sobre la base de datos `proyectoFerreteria`.
+Ejecutar [`01_implementacion_indices.sql`](../../sql/tecnico/indices/01_implementacion_indices.sql) en `ProyectoFerreteria`. El script elimina y vuelve a crear `VENTA_HISTORICA`, luego carga 1.000.000 de filas de prueba. No crea índices, de modo que la tabla queda sin índice antes de comenzar la comparación.
 
-El script primero verifica si existe una tabla llamada
-`VENTA_HISTORICA`. Si existe, la elimina y luego la crea nuevamente con
-las siguientes columnas:
+La tabla contiene `id_venta`, `estado`, `domicilio_entrega`, `total`, `fecha_venta` e `id_usuario`. Los datos se generan en el mismo script. Como el script recrea la tabla, no debe usarse para guardar información que se necesite conservar.
 
--   `id_venta`: identificador autoincremental.
--   `estado`: estado de la venta.
--   `domicilio_entrega`: domicilio de entrega de prueba.
--   `total`: importe de la venta.
--   `fecha_venta`: fecha y hora de la venta.
--   `id_usuario`: identificador del usuario asociado.
+## 4. Caso concreto y escenarios comparados
 
-A continuación, genera e inserta 1.000.000 de registros mediante una
-expresión de tabla común (`CTE`) y la función `ROW_NUMBER()`. Los
-estados se distribuyen entre `Pendiente`, `Entregado` y `Cancelado`. Los
-domicilios, importes, fechas y usuarios se generan automáticamente.
+La demostración está en [`02_demostracion_indices.sql`](../../sql/tecnico/indices/02_demostracion_indices.sql), que debe ejecutarse después de la implementación. Primero retira los índices de prueba con nombre conocido, para iniciar con la tabla sin índice.
 
-**Importante:** el script elimina y vuelve a crear `VENTA_HISTORICA`
-cada vez que se ejecuta. Por ese motivo, debe utilizarse como una tabla
-de prueba y no sobre una tabla que contenga información que se necesite
-conservar.
+La misma consulta se ejecuta en los tres escenarios:
 
-### Creación del índice
-
-El índice implementado es:
-
-``` sql
-CREATE NONCLUSTERED INDEX IX_VentaHistorica_Fecha_Cobertura
-ON VENTA_HISTORICA (fecha_venta)
-INCLUDE (total, estado);
-```
-
-La columna `fecha_venta` es la clave del índice porque se utiliza para
-filtrar las ventas por un rango de fechas. Las columnas `total` y
-`estado` se incorporan mediante `INCLUDE`, por lo que quedan almacenadas
-como información adicional del índice.
-
-El script también verifica si ya existe un índice con ese nombre en la
-tabla y, en ese caso, lo elimina antes de crearlo nuevamente. Como la
-tabla se elimina y se crea otra vez al comienzo del script, normalmente
-el índice anterior también desaparece al recrearse la tabla.
-
-## 4. Caso concreto aplicado a la demostración
-
-El índice está pensado para optimizar consultas que necesitan recuperar
-ventas históricas según su fecha. Por ejemplo:
-
-``` sql
+```sql
 SELECT id_venta, fecha_venta, estado, total
-FROM VENTA_HISTORICA
+FROM dbo.VENTA_HISTORICA
 WHERE fecha_venta BETWEEN '2023-01-01' AND '2023-03-31';
 ```
 
-SQL Server puede utilizar `IX_VentaHistorica_Fecha_Cobertura` para
-localizar los registros que cumplen el filtro sobre `fecha_venta`.
+1. **Sin índice:** ejecuta la consulta sobre la tabla sin índice.
+2. **Índice agrupado:** crea `CX_VentaHistorica_Fecha` con `CREATE CLUSTERED INDEX` sobre `fecha_venta` y repite la consulta.
+3. **Índice de cobertura:** elimina el índice agrupado con `DROP INDEX`, crea `IX_VentaHistorica_Fecha_Cobertura` con `CREATE NONCLUSTERED INDEX` sobre `fecha_venta` e incluye `id_venta`, `estado` y `total`; luego repite la consulta.
 
-La columna `fecha_venta` funciona como clave de búsqueda, mientras que
-`estado` y `total` están incluidas en el índice. Sin embargo, `id_venta`
-no forma parte de la clave ni de las columnas incluidas. Por eso, el
-índice no cubre por sí solo todas las columnas solicitadas por el
-`SELECT` y SQL Server podría necesitar acceder también a la tabla para
-obtener `id_venta`.
+Las tres ejecuciones están medidas con `SET STATISTICS TIME ON` y `SET STATISTICS IO ON`. Antes de ejecutar en SSMS, activar el plan de ejecución real con `Ctrl+M`. Para comparar, registrar por escenario el plan mostrado, las lecturas lógicas y el tiempo informado por SQL Server. No se afirma un ganador ni se presentan métricas nuevas: dependen de la ejecución y deben obtenerse de las evidencias.
 
-Además, como `fecha_venta` es de tipo `DATETIME`, el límite
-`'2023-03-31'` representa el comienzo de ese día. Por lo tanto, el
-filtro `BETWEEN` no incluye las horas posteriores del 31 de marzo. Para
-abarcar todo el período hasta el final de ese día, se podría utilizar un
-límite exclusivo:
+| Escenario | Índice disponible | Datos para comparar |
+|---|---|---|
+| 1 | Ninguno | Plan real, lecturas y tiempo |
+| 2 | `CLUSTERED` sobre `fecha_venta` | Plan real, lecturas y tiempo |
+| 3 | `NONCLUSTERED` sobre `fecha_venta`, con `id_venta`, `estado` y `total` incluidos | Plan real, lecturas y tiempo |
 
-``` sql
-WHERE fecha_venta >= '2023-01-01'
-  AND fecha_venta <  '2023-04-01';
-```
+El límite superior de `BETWEEN` es `'2023-03-31'`, que en `DATETIME` corresponde al comienzo de ese día; se mantiene idéntico en los tres escenarios para que la comparación use la misma consulta.
 
-## 5. Script de demostración y resultados obtenidos
+## 5. Evidencias y resultados
 
-La demostración está en
-[`02_demostracion_indices.sql`](../../sql/tecnico/indices/02_demostracion_indices.sql).
-Debe ejecutarse después del script de implementación, ya que necesita
-que exista la tabla `VENTA_HISTORICA` y que el índice haya sido creado.
+Las capturas actuales fueron tomadas con la versión anterior de los scripts, que solo creaba el índice no agrupado y ejecutaba una vez la consulta. No muestran la comparación de tres escenarios y no bastan como evidencia de la demostración actual.
 
-El script realiza las siguientes acciones:
-
-1.  Selecciona la base de datos `proyectoFerreteria`.
-2.  Activa `SET STATISTICS TIME ON` para obtener información sobre los
-    tiempos de ejecución.
-3.  Activa `SET STATISTICS IO ON` para observar las lecturas de entrada
-    y salida realizadas por SQL Server.
-4.  Ejecuta una consulta que busca las ventas históricas comprendidas
-    entre las fechas indicadas.
-5.  Desactiva las estadísticas al finalizar.
-
-Para complementar la demostración, se puede activar el plan de ejecución
-real en SQL Server Management Studio mediante `Ctrl + M` antes de
-ejecutar la consulta. Esto permite observar qué operaciones utiliza SQL
-Server y si decide aprovechar el índice creado.
-
-Las estadísticas permiten analizar las lecturas lógicas y los tiempos
-informados por el motor. Sin embargo, la existencia del índice no
-garantiza que SQL Server lo utilice: el optimizador elige el plan de
-ejecución según las estadísticas, la distribución de los datos y el
-costo estimado de cada alternativa.
-
-La demostración actual ejecuta la consulta con el índice disponible,
-pero no realiza automáticamente una comparación entre la ejecución con y
-sin índice. Por lo tanto, para afirmar que hubo una mejora de
-rendimiento sería necesario realizar ambas pruebas bajo las mismas
-condiciones y comparar sus resultados.
+Las capturas nuevas requeridas y lo que debe verse en cada una están detalladas en [`evidencias/README.md`](../../sql/tecnico/indices/evidencias/README.md). Deben obtenerse manualmente con resultados reales de SQL Server; no se atribuyen valores de rendimiento que todavía no se hayan medido.
 
 ## Conclusión
 
-Se implementó un índice no agrupado sobre
-`VENTA_HISTORICA(fecha_venta)`, incluyendo las columnas `total` y
-`estado`, con el propósito de optimizar las búsquedas por rango de
-fechas. La prueba utiliza un millón de registros generados
-automáticamente y un script de demostración que permite observar las
-lecturas de E/S y los tiempos de ejecución. De esta manera, se muestra
-cómo SQL Server puede aprovechar los índices para mejorar determinadas
-consultas y cómo evaluar su comportamiento mediante las herramientas de
-estadísticas y los planes de ejecución.
+La demostración compara la misma consulta con la tabla sin índice, con un índice agrupado y con uno no agrupado de cobertura. Las estadísticas y los planes de ejecución permiten observar las diferencias de cada ejecución, sin asumir de antemano que una alternativa siempre será más rápida.

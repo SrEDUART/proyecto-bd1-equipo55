@@ -20,22 +20,33 @@ Recibe el `id_cliente` y realiza una **baja lógica** actualizando el campo `eli
 
 ## 3. Ejemplo de Ejecución y Demostración (T-SQL)
 
-```sql
-USE proyectoFerreteria;
-GO
+La demostración está en
+[`02_demostracion_procedimientos.sql`](../../sql/tecnico/procedimientos/02_demostracion_procedimientos.sql).
+Mantiene las pruebas de inserción, modificación y baja lógica mediante
+los procedimientos almacenados.
 
--- prueba de insercion
-IF NOT EXISTS (SELECT 1 FROM CLIENTE WHERE dni = 48999888)
-BEGIN
-    EXEC sp_InsertarCliente 'Carlos', 'Benitez', 48999888, 'carlos.benitez@test.com', 31;
-END
+También compara dos formas de insertar un lote de cinco clientes:
 
--- prueba de modificacion
-EXEC sp_ModificarCliente 301, 'Carlos Alberto', 'Benitez', 48999888, 'carlos.modificado@test.com', 31;
+1. Una sentencia `INSERT ... SELECT` directa.
+2. Cinco ejecuciones de `sp_InsertarCliente`.
 
--- prueba de eliminacion (baja logica)
-EXEC sp_EliminarCliente 301;
-```
+Los valores de prueba se generan para evitar colisiones con DNI y correos
+existentes. La demostración mide ambas alternativas con
+`SET STATISTICS TIME ON/OFF`, muestra cuántas filas quedaron insertadas
+por cada alternativa y finalmente ejecuta `ROLLBACK`. Una consulta
+posterior comprueba que no queden filas del lote.
+
+El tiempo medido depende del contexto, el equipo y la carga del servidor,
+por lo que una ejecución aislada no demuestra que una alternativa sea
+siempre más rápida. Además de su rendimiento, el procedimiento permite
+centralizar y reutilizar la lógica de inserción.
+
+**Evidencia de la comparación:** la captura nueva debe mostrar ambas
+mediciones en la pestaña **Mensajes**, los conteos de cinco filas para
+cada alternativa y cero filas restantes después del `ROLLBACK`. Los
+detalles están en
+[`README de evidencias`](../../sql/tecnico/procedimientos/evidencias/README.md).
+
 ## 4. Funciones almacenadas
 
 Además de los procedimientos almacenados destinados a realizar
@@ -61,6 +72,13 @@ posteriormente. El resultado permite conocer cuánto representa
 económicamente cada renglón de una venta luego de aplicar el descuento
 correspondiente.
 
+**Evidencia de funcionamiento:** en la siguiente captura se observa el
+resultado de ejecutar la función para distintos detalles de venta, junto
+con los datos utilizados para realizar el cálculo.
+
+![Evidencia de
+fn_ImporteDetalleVenta](../../sql/tecnico/funciones/evidencias/02_fn_importe_detalle.png)
+
 ### 4.2. `fn_TotalGastadoCliente`
 
 Esta función obtiene el importe total gastado por un cliente a partir de
@@ -72,6 +90,12 @@ Su utilidad consiste en consultar de manera sencilla el total de compras
 acumuladas de cada cliente. El resultado puede incorporarse a consultas
 que permitan analizar el historial de compras o conocer el volumen de
 operaciones asociado a cada persona.
+
+**Evidencia de funcionamiento:** la captura muestra los clientes
+consultados y el total gastado calculado por la función para cada uno.
+
+![Evidencia de
+fn_TotalGastadoCliente](../../sql/tecnico/funciones/evidencias/03_fn_total_gastado_cliente.png)
 
 ### 4.3. `fn_StockDisponible`
 
@@ -85,6 +109,14 @@ confundirlo con el stock que el mismo producto pueda tener en otras
 sucursales. Esto resulta útil para las tareas de control y consulta de
 existencias.
 
+**Evidencia de funcionamiento:** en la captura se comparan los valores
+obtenidos directamente desde la tabla `INVENTARIO` (`stock_guardado`)
+con los devueltos por la función (`stock_funcion`). La coincidencia de
+ambos valores permite comprobar que la función recupera correctamente el
+stock registrado para cada producto y sucursal.
+
+![Evidencia de fn_StockDisponible](../../sql/tecnico/funciones/evidencias/04_fn_stock_disponible.png)
+
 ### 4.4. Verificación general
 
 Las tres funciones se probaron mediante consultas en SQL Server
@@ -93,4 +125,4 @@ y el mensaje de ejecución correcta.
 
 Estas pruebas permiten verificar que las funciones reciben los
 parámetros correspondientes y devuelven los valores esperados para los
-datos cargados en la base de datos `proyectoFerreteria`.
+datos cargados en la base de datos `ProyectoFerreteria`.
