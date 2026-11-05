@@ -1,10 +1,11 @@
 # Evidencias de transacciones
 
-Guardar aquí las dos capturas tomadas durante la ejecución de `02_demostracion_transacciones.sql` en SQL Server Management Studio. Las imágenes aún deben capturarse; este README describe qué mostrar en cada una.
+Las dos capturas existentes corresponden a la ejecución de
+`02_demostracion_transacciones.sql` en SQL Server Management Studio.
 
 ## `01_transaccion_exitosa.png`
 
-Debe mostrar la ejecución exitosa del registro de una venta:
+Muestra la ejecución exitosa del registro de una venta:
 
 - el mensaje de ejecución correcta del procedimiento, que confirma que el flujo llegó a `COMMIT TRANSACTION`;
 - los resultados de `VENTA` y `DETALLE_VENTA` que muestran los registros creados;
@@ -14,7 +15,7 @@ La demostración usa una transacción externa para consultar esos resultados y l
 
 ## `02_transaccion_rollback.png`
 
-Debe mostrar el caso con error y su verificación:
+Muestra el caso con error y su verificación:
 
 - la inserción de la venta antes del error;
 - el error `CHECK` producido al intentar insertar un detalle con `precio_unitario_catalogo = 0`;

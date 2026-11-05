@@ -4,32 +4,102 @@ GO
 
 -- demostracion de procedimientos almacenados (pruebas)
 
--- 1. prueba de insercion (solo inserta si no existe previamente el DNI)
-IF NOT EXISTS (SELECT 1 FROM CLIENTE WHERE dni = 48999888)
+-- 1. pruebas CRUD sobre un cliente temporal con identificadores unicos.
+DECLARE @id_direccion_prueba INT;
+DECLARE @dni_prueba INT;
+DECLARE @correo_prueba VARCHAR(100);
+DECLARE @id_cliente_prueba INT;
+
+SELECT TOP (1) @id_direccion_prueba = id_direccion
+FROM dbo.DIRECCION
+ORDER BY id_direccion;
+
+IF @id_direccion_prueba IS NULL
+    THROW 57000, 'No hay direcciones disponibles para las pruebas CRUD.', 1;
+
+SET @dni_prueba =
+    CONVERT(INT, ABS(CONVERT(BIGINT, CHECKSUM(NEWID()))) % 2147483646) + 1;
+
+WHILE EXISTS (
+    SELECT 1
+    FROM dbo.CLIENTE
+    WHERE dni = @dni_prueba
+)
 BEGIN
-    EXEC sp_InsertarCliente 'Carlos', 'Benitez', 48999888, 'carlos.benitez@test.com', 31;
-END
+    SET @dni_prueba =
+        CONVERT(INT, ABS(CONVERT(BIGINT, CHECKSUM(NEWID()))) % 2147483646) + 1;
+END;
 
--- verificar insercion
-SELECT TOP 1 * FROM CLIENTE ORDER BY id_cliente DESC;
+SET @correo_prueba =
+    CONCAT('crud-prueba-', CONVERT(VARCHAR(36), NEWID()), '@example.test');
 
--- 2. prueba de modificacion (modifica solo nombre/apellido del ultimo cliente sin tocar DNI/correo para evitar duplicados)
-DECLARE @id_prueba INT = (SELECT MAX(id_cliente) FROM CLIENTE);
-DECLARE @dni_actual INT = (SELECT dni FROM CLIENTE WHERE id_cliente = @id_prueba);
-DECLARE @correo_actual VARCHAR(100) = (SELECT correo FROM CLIENTE WHERE id_cliente = @id_prueba);
-DECLARE @direccion_actual INT = (SELECT id_direccion FROM CLIENTE WHERE id_cliente = @id_prueba);
+WHILE EXISTS (
+    SELECT 1
+    FROM dbo.CLIENTE
+    WHERE correo = @correo_prueba
+)
+BEGIN
+    SET @correo_prueba =
+        CONCAT('crud-prueba-', CONVERT(VARCHAR(36), NEWID()), '@example.test');
+END;
 
-EXEC sp_ModificarCliente @id_prueba, 'Carlos Alberto', 'Benitez', @dni_actual, @correo_actual, @direccion_actual;
+BEGIN TRY
+    BEGIN TRANSACTION;
 
--- verificar modificacion
-SELECT * FROM CLIENTE WHERE id_cliente = (SELECT MAX(id_cliente) FROM CLIENTE);
+    PRINT '--- PRUEBA 1: INSERCION DE CLIENTE TEMPORAL ---';
+    EXEC dbo.sp_InsertarCliente
+        @nombre = 'Cliente',
+        @apellido = 'Prueba CRUD',
+        @dni = @dni_prueba,
+        @correo = @correo_prueba,
+        @id_direccion = @id_direccion_prueba;
 
--- 3. prueba de eliminacion (baja logica sobre el ultimo cliente)
-DECLARE @id_prueba_baja INT = (SELECT MAX(id_cliente) FROM CLIENTE);
-EXEC sp_EliminarCliente @id_prueba_baja;
+    SELECT @id_cliente_prueba = id_cliente
+    FROM dbo.CLIENTE
+    WHERE dni = @dni_prueba
+      AND correo = @correo_prueba;
 
--- verificar fecha de eliminacion
-SELECT * FROM CLIENTE WHERE id_cliente = (SELECT MAX(id_cliente) FROM CLIENTE);
+    IF @id_cliente_prueba IS NULL
+        THROW 57002, 'No se pudo identificar el cliente temporal insertado.', 1;
+
+    SELECT id_cliente, nombre, apellido, dni, correo, id_direccion, eliminado_en
+    FROM dbo.CLIENTE
+    WHERE id_cliente = @id_cliente_prueba;
+
+    PRINT '--- PRUEBA 2: MODIFICACION DEL MISMO CLIENTE ---';
+    EXEC dbo.sp_ModificarCliente
+        @id_cliente = @id_cliente_prueba,
+        @nombre = 'Cliente Modificado',
+        @apellido = 'Prueba CRUD',
+        @dni = @dni_prueba,
+        @correo = @correo_prueba,
+        @id_direccion = @id_direccion_prueba;
+
+    SELECT id_cliente, nombre, apellido, dni, correo, id_direccion, eliminado_en
+    FROM dbo.CLIENTE
+    WHERE id_cliente = @id_cliente_prueba;
+
+    PRINT '--- PRUEBA 3: BAJA LOGICA DEL MISMO CLIENTE ---';
+    EXEC dbo.sp_EliminarCliente
+        @id_cliente = @id_cliente_prueba;
+
+    SELECT id_cliente, nombre, apellido, dni, correo, eliminado_en
+    FROM dbo.CLIENTE
+    WHERE id_cliente = @id_cliente_prueba;
+
+    ROLLBACK TRANSACTION;
+
+    PRINT 'Verificacion posterior al ROLLBACK (0 filas esperadas):';
+    SELECT COUNT(*) AS clientes_temporales_restantes
+    FROM dbo.CLIENTE
+    WHERE id_cliente = @id_cliente_prueba;
+END TRY
+BEGIN CATCH
+    IF XACT_STATE() <> 0
+        ROLLBACK TRANSACTION;
+
+    THROW;
+END CATCH;
 
 -- 4. comparacion de insercion directa y mediante procedimiento
 DECLARE @id_direccion_lote INT;

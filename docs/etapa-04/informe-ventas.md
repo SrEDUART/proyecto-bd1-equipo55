@@ -35,4 +35,4 @@ El filtro usa V.fecha_hora >= @fecha_desde y V.fecha_hora < DATEADD(DAY, 1, @fec
 
 
 ## Resultado y utilidad
-El archivo devuelve dos resultados: uno con los totales por vendedor y otro con los totales por categoría. Los valores dependen de las ventas realmente cargadas en la base de datos ferreteria. El informe permite comparar el desempeño de los vendedores e identificar las categorías con mayor volumen e importe de ventas.
+El archivo devuelve dos resultados: uno con los totales por vendedor y otro con los totales por categoría. Los valores dependen de las ventas realmente cargadas en la base de datos `ProyectoFerreteria`. El informe permite comparar el desempeño de los vendedores e identificar las categorías con mayor volumen e importe de ventas.

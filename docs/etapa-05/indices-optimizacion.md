@@ -29,7 +29,8 @@ La misma consulta se ejecuta en los tres escenarios:
 ```sql
 SELECT id_venta, fecha_venta, estado, total
 FROM dbo.VENTA_HISTORICA
-WHERE fecha_venta BETWEEN '2023-01-01' AND '2023-03-31';
+WHERE fecha_venta >= '2023-01-01'
+  AND fecha_venta < '2023-04-01';
 ```
 
 1. **Sin índice:** ejecuta la consulta sobre la tabla sin índice.
@@ -44,13 +45,11 @@ Las tres ejecuciones están medidas con `SET STATISTICS TIME ON` y `SET STATISTI
 | 2 | `CLUSTERED` sobre `fecha_venta` | Plan real, lecturas y tiempo |
 | 3 | `NONCLUSTERED` sobre `fecha_venta`, con `id_venta`, `estado` y `total` incluidos | Plan real, lecturas y tiempo |
 
-El límite superior de `BETWEEN` es `'2023-03-31'`, que en `DATETIME` corresponde al comienzo de ese día; se mantiene idéntico en los tres escenarios para que la comparación use la misma consulta.
+El límite superior exclusivo `'2023-04-01'` incluye todo el 31 de marzo, incluso las horas posteriores al comienzo del día en una columna `DATETIME`. La misma condición se usa en los tres escenarios.
 
 ## 5. Evidencias y resultados
 
-Las capturas actuales fueron tomadas con la versión anterior de los scripts, que solo creaba el índice no agrupado y ejecutaba una vez la consulta. No muestran la comparación de tres escenarios y no bastan como evidencia de la demostración actual.
-
-Las capturas nuevas requeridas y lo que debe verse en cada una están detalladas en [`evidencias/README.md`](../../sql/tecnico/indices/evidencias/README.md). Deben obtenerse manualmente con resultados reales de SQL Server; no se atribuyen valores de rendimiento que todavía no se hayan medido.
+Las evidencias finales de la demostración actual y la descripción de cada captura están en [`evidencias/README.md`](../../sql/tecnico/indices/evidencias/README.md).
 
 ## Conclusión
 
