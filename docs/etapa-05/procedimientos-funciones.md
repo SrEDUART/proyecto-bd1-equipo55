@@ -20,24 +20,32 @@ Recibe el `id_cliente` y realiza una **baja lógica** actualizando el campo `eli
 
 ## 3. Ejemplo de Ejecución y Demostración (T-SQL)
 
-```sql
-USE proyectoFerreteria;
-GO
+La demostración está en
+[`02_demostracion_procedimientos.sql`](../../sql/tecnico/procedimientos/02_demostracion_procedimientos.sql).
+Mantiene las pruebas de inserción, modificación y baja lógica mediante
+los procedimientos almacenados.
 
--- prueba de insercion
-IF NOT EXISTS (SELECT 1 FROM CLIENTE WHERE dni = 48999888)
-BEGIN
-    EXEC sp_InsertarCliente 'Carlos', 'Benitez', 48999888, 'carlos.benitez@test.com', 31;
-END
+También compara dos formas de insertar un lote de cinco clientes:
 
--- prueba de modificacion
-EXEC sp_ModificarCliente 301, 'Carlos Alberto', 'Benitez', 48999888, 'carlos.modificado@test.com', 31;
+1. Una sentencia `INSERT ... SELECT` directa.
+2. Cinco ejecuciones de `sp_InsertarCliente`.
 
--- prueba de eliminacion (baja logica)
-EXEC sp_EliminarCliente 301;
+Los valores de prueba se generan para evitar colisiones con DNI y correos
+existentes. La demostración mide ambas alternativas con
+`SET STATISTICS TIME ON/OFF`, muestra cuántas filas quedaron insertadas
+por cada alternativa y finalmente ejecuta `ROLLBACK`. Una consulta
+posterior comprueba que no queden filas del lote.
 
+El tiempo medido depende del contexto, el equipo y la carga del servidor,
+por lo que una ejecución aislada no demuestra que una alternativa sea
+siempre más rápida. Además de su rendimiento, el procedimiento permite
+centralizar y reutilizar la lógica de inserción.
 
-------------------------------------------------------------------------
+**Evidencia de la comparación:** la captura nueva debe mostrar ambas
+mediciones en la pestaña **Mensajes**, los conteos de cinco filas para
+cada alternativa y cero filas restantes después del `ROLLBACK`. Los
+detalles están en
+[`README de evidencias`](../../sql/tecnico/procedimientos/evidencias/README.md).
 
 ## 4. Funciones almacenadas
 

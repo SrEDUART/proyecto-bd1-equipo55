@@ -1,56 +1,43 @@
-# Etapa V - Seguridad: Permisos y Roles (Operador de Ventas)
+# Seguridad: usuarios, roles y permisos
 
-## 1. Descripción
-Implementación de la política de seguridad y control de acceso para el perfil de ventas dentro de la base de datos `proyectoFerreteria`, correspondiente a la Etapa V. Se configura el rol de base de datos `rol_operador_ventas`, se aplican restricciones de acceso directo sobre la tabla `CLIENTE` mediante `DENY`, se conceden permisos de ejecución (`GRANT EXECUTE`) sobre los procedimientos almacenados correspondientes y se valida todo con el usuario de prueba `usuario_vendedor`.
+## 1. Objetivo
 
----
+El módulo muestra cómo controlar el acceso a `CLIENTE` en `ProyectoFerreteria` mediante usuarios de base de datos, roles y permisos. Los scripts de prueba usan usuarios `WITHOUT LOGIN`, por lo que sirven para comprobar permisos internos sin crear cuentas de conexión al servidor.
 
-## 2. Detalle de los Permisos y Controles
+## 2. Autenticación de SQL Server
 
-### 2.1. Creación de Rol y Usuario
-Se verifica y crea el rol de base de datos `rol_operador_ventas` y el usuario `usuario_vendedor` (creado `WITHOUT LOGIN` para pruebas internas de permisos), asignando posteriormente el usuario como miembro del rol.
+El modo de autenticación es una configuración de la instancia y no se cambia desde estos scripts de forma portable. La demostración consulta `SERVERPROPERTY('IsIntegratedSecurityOnly')`:
 
-### 2.2. Restricción Directa de Escritura (`DENY`)
-Se aplica una restricción explícita de `DENY INSERT, UPDATE, DELETE ON dbo.CLIENTE TO rol_operador_ventas`. Esto impide que los usuarios con este rol modifiquen la tabla `CLIENTE` de forma directa a través de sentencias SQL estándar.
+- `0`: está habilitada la autenticación mixta (Windows y SQL Server).
+- `1`: está habilitada únicamente la autenticación de Windows.
 
-### 2.3. Lectura y Ejecución Controlada (`GRANT SELECT` / `GRANT EXECUTE`)
-Se otorga permiso de consulta (`GRANT SELECT`) sobre la tabla `CLIENTE` y permiso de ejecución (`GRANT EXECUTE`) exclusivo sobre los procedimientos almacenados de gestión de clientes:
-- `dbo.sp_InsertarCliente`
-- `dbo.sp_ModificarCliente`
-- `dbo.sp_EliminarCliente`
+Para activar la autenticación mixta, en SQL Server Management Studio abrir las propiedades del servidor, ir a **Seguridad**, seleccionar **Modo de autenticación de SQL Server y Windows** y confirmar el cambio. Luego se debe reiniciar el servicio de SQL Server para que la configuración tenga efecto. La instancia debe permitir este modo para usar inicios de sesión de SQL Server.
 
-Esto asegura el principio de menor privilegio: el usuario solo puede operar a través de la interfaz lógica controlada por los procedimientos almacenados.
+## 3. Roles y usuarios implementados
 
----
+El script [`01_implementacion_seguridad.sql`](../../sql/tecnico/seguridad/01_implementacion_seguridad.sql) conserva `rol_operador_ventas` y `usuario_vendedor`, y agrega:
 
-## 3. Ejemplo de Ejecución y Demostración (T-SQL)
+- `usuario_administrador`, usuario `WITHOUT LOGIN` asignado al rol integrado `db_owner` para la prueba de administración.
+- `rol_lectura`, con `SELECT` sobre `dbo.CLIENTE`, `DENY` para `INSERT`, `UPDATE` y `DELETE` directos, y `EXECUTE` sobre `dbo.sp_InsertarCliente`.
+- `usuario_lectura_1` y `usuario_lectura_2`, ambos `WITHOUT LOGIN` y miembros del mismo `rol_lectura`.
 
-```sql
-USE proyectoFerreteria;
-GO
+El permiso para ejecutar `sp_InsertarCliente` permite altas controladas por ese procedimiento aunque el rol tenga denegada la inserción directa en la tabla. El procedimiento y el script de seguridad deben pertenecer al mismo esquema/propietario para que se aplique la cadena de propiedad de SQL Server.
 
--- Prueba 1: Intento de inserción directa (Debe fallar intencionalmente por el DENY)
-EXECUTE AS USER = 'usuario_vendedor';
+La implementación verifica que `dbo.sp_InsertarCliente` exista, por lo que primero debe ejecutarse [`01_implementacion_procedimientos.sql`](../../sql/tecnico/procedimientos/01_implementacion_procedimientos.sql).
 
-BEGIN TRY
-    INSERT INTO CLIENTE (nombre, apellido, dni, correo, id_direccion)
-    VALUES ('Prueba', 'Denegada', 99999999, 'denegado@test.com', 31);
-END TRY
-BEGIN CATCH
-    PRINT 'Resultado esperado: ' + ERROR_MESSAGE();
-END CATCH;
+## 4. Pruebas y resultados
 
-REVERT;
-GO
+Ejecutar [`02_demostracion_seguridad.sql`](../../sql/tecnico/seguridad/02_demostracion_seguridad.sql) después de la implementación. La demostración obtiene una dirección existente y genera DNI y correo únicos para las filas temporales. Las pruebas se ejecutan dentro de una transacción que termina con `ROLLBACK`; no dejan clientes de prueba en la base.
 
--- Prueba 2: Ejecución a través del procedimiento almacenado (Debe funcionar por el GRANT EXECUTE)
-EXECUTE AS USER = 'usuario_vendedor';
+El script comprueba lo siguiente:
 
-EXEC sp_InsertarCliente 'Mariana', 'Gomez', 47111222, 'mariana.gomez@test.com', 31;
+1. **Administrador:** puede insertar directamente en `CLIENTE` y consultar la fila creada durante la prueba.
+2. **Primer usuario de lectura:** puede consultar `CLIENTE`; su `INSERT` directo se rechaza; puede insertar mediante `dbo.sp_InsertarCliente` y consultar el resultado.
+3. **Segundo usuario de lectura:** recibe los mismos resultados que el primero por ser miembro del mismo rol: lectura permitida, inserción directa denegada e inserción mediante el procedimiento permitida.
+4. **Limpieza:** al terminar el `ROLLBACK`, consulta los correos usados para verificar que las filas temporales ya no existen.
 
-REVERT;
-GO
+La demostración informa además el modo de autenticación de la instancia. Los usuarios `WITHOUT LOGIN` prueban la autorización dentro de la base, pero no prueban una conexión al servidor ni sustituyen la verificación de autenticación mixta.
 
--- Verificar inserción realizada vía procedimiento
-SELECT * FROM CLIENTE WHERE dni = 47111222;
-GO
+## 5. Conclusión
+
+Los roles reúnen permisos para asignarlos de forma consistente. El administrador puede realizar operaciones directas, mientras que los usuarios de lectura consultan la tabla y realizan altas únicamente mediante el procedimiento autorizado. Las pruebas muestran que ambos usuarios del rol heredan el mismo comportamiento.

@@ -1,4 +1,4 @@
-USE proyectoFerreteria;
+USE ProyectoFerreteria;
 GO
 
 -- Se crea tabla masiva VENTA_HISTORICA 
@@ -16,7 +16,8 @@ CREATE TABLE VENTA_HISTORICA (
 );
 GO
 
---  Se carga 1.000.000 de registros de prueba
+-- Se carga 1.000.000 de registros de prueba. La tabla queda sin indices
+-- para que la demostracion pueda medir primero el escenario base.
 SET NOCOUNT ON;
 GO
 
@@ -39,16 +40,4 @@ SELECT
             DATEADD(DAY, ABS(CHECKSUM(NEWID())) % 1826, CAST('2020-01-01' AS DATETIME))),
     (n % 10) + 1
 FROM numeros;
-GO
-
--- Se crea indice no agrupado (NONCLUSTERED) con cobertura sobre fecha_venta
--- Se especifica NONCLUSTERED para crear una estructura de busqueda secundaria sobre la fecha
--- sin alterar el ordenamiento fisico de los datos en disco ni interferir con la PK.
-IF EXISTS (SELECT 1 FROM sys.indexes WHERE name = 'IX_VentaHistorica_Fecha_Cobertura' AND object_id = OBJECT_ID('VENTA_HISTORICA'))
-    DROP INDEX IX_VentaHistorica_Fecha_Cobertura ON VENTA_HISTORICA;
-GO
-
-CREATE NONCLUSTERED INDEX IX_VentaHistorica_Fecha_Cobertura
-ON VENTA_HISTORICA (fecha_venta)
-INCLUDE (total, estado);
 GO
